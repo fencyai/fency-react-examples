@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "build:watch": "tsc -b --watch",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ci": "npm run lint && npm run build"
   },
   "dependencies": {
     "@fencyai/js": "^0.1.30",
