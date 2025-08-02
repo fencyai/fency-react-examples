@@ -4,7 +4,7 @@ export default function AnthropicSynchronousChatCompletion() {
     const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
-        await chatCompletions.createSynchronousChatCompletion({
+        await chatCompletions.createChatCompletion({
             anthropic: {
                 model: 'claude-sonnet-4-0',
                 messages: [

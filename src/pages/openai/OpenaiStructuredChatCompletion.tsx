@@ -7,16 +7,14 @@ const responseFormat = z.object({
     age: z.number(),
 })
 
-export default function AnthropicSynchronousChatCompletionWithFormatting() {
+export default function OpenaiStructuredChatCompletion() {
     const chatCompletions = useChatCompletions()
-    const [result, setResult] = useState<z.infer<typeof responseFormat> | null>(
-        null
-    )
+    const [result, setResult] = useState<z.infer<typeof responseFormat>>()
 
     const handleClick = async () => {
-        const result = await chatCompletions.createSynchronousChatCompletion({
-            anthropic: {
-                model: 'claude-sonnet-4-0',
+        const result = await chatCompletions.createStructuredChatCompletion({
+            openai: {
+                model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'user',
@@ -28,7 +26,7 @@ export default function AnthropicSynchronousChatCompletionWithFormatting() {
             responseFormat,
         })
 
-        setResult(result.structuredResponse ?? null)
+        setResult(result.structuredResponse)
     }
 
     return (
@@ -44,4 +42,4 @@ export default function AnthropicSynchronousChatCompletionWithFormatting() {
             )}
         </div>
     )
-} 
+}

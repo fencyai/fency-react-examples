@@ -7,7 +7,7 @@ export default function GeminiStreamingChatCompletion() {
         const result = await chatCompletions.createStreamingChatCompletion({
             gemini: {
                 model: 'gemini-2.5-flash-lite-preview-06-17',
-                content: 'Please write a short story about a bird.',
+                content: 'Please write a short story about a cat using 200 words.',
             },
         })
 

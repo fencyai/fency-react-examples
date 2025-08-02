@@ -10,7 +10,7 @@ export default function AnthropicStreamingChatCompletion() {
                 messages: [
                     {
                         role: 'user',
-                        content: 'Please write a short story about a dog.',
+                        content: 'Please write a short story about a cat using 200 words.',
                     },
                 ],
             },

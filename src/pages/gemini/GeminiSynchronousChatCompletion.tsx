@@ -4,7 +4,7 @@ export default function GeminiSynchronousChatCompletion() {
     const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
-        await chatCompletions.createSynchronousChatCompletion({
+        await chatCompletions.createChatCompletion({
             gemini: {
                 model: 'gemini-2.5-flash-lite-preview-06-17',
                 content: 'Hello, how are you?',

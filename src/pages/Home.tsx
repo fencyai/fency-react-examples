@@ -11,13 +11,13 @@ export default function Home() {
                     to={routes.openai.synchronousChatCompletion}
                     className="text-blue-500"
                 >
-                    Synchronous Chat Completion
+                    Unstructured Chat Completion
                 </Link>
                 <Link
                     to={routes.openai.synchronousChatCompletionWithFormatting}
                     className="text-blue-500"
                 >
-                    Synchronous Chat Completion With Formatting
+                    Structured Chat Completion
                 </Link>
                 <Link
                     to={routes.openai.streamingChatCompletion}
@@ -32,13 +32,15 @@ export default function Home() {
                     to={routes.anthropic.synchronousChatCompletion}
                     className="text-blue-500"
                 >
-                    Synchronous Chat Completion
+                    Unstructured Chat Completion
                 </Link>
                 <Link
-                    to={routes.anthropic.synchronousChatCompletionWithFormatting}
+                    to={
+                        routes.anthropic.synchronousChatCompletionWithFormatting
+                    }
                     className="text-blue-500"
                 >
-                    Synchronous Chat Completion With Formatting
+                    Structured Chat Completion
                 </Link>
                 <Link
                     to={routes.anthropic.streamingChatCompletion}
@@ -54,13 +56,13 @@ export default function Home() {
                     to={routes.gemini.synchronousChatCompletion}
                     className="text-blue-500"
                 >
-                    Synchronous Chat Completion
+                    Unstructured Chat Completion
                 </Link>
                 <Link
                     to={routes.gemini.synchronousChatCompletionWithFormatting}
                     className="text-blue-500"
                 >
-                    Synchronous Chat Completion With Formatting
+                    Structured Chat Completion
                 </Link>
                 <Link
                     to={routes.gemini.streamingChatCompletion}

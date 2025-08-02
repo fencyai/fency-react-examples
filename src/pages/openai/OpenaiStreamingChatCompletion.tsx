@@ -11,7 +11,7 @@ export default function OpenaiStreamingChatCompletion() {
                     {
                         role: 'user',
                         content:
-                            'Please write a short story about a cat using 300 words.',
+                            'Please write a short story about a cat using 200 words.',
                     },
                 ],
             },

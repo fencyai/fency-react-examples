@@ -1,14 +1,14 @@
 import { Route, Routes } from 'react-router'
+import AnthropicStreamingChatCompletion from './pages/anthropic/AnthropicStreamingChatCompletion'
+import AnthropicStructuredChatCompletion from './pages/anthropic/AnthropicStructuredChatCompletion'
+import AnthropicSynchronousChatCompletion from './pages/anthropic/AnthropicSynchronousChatCompletion'
+import GeminiStreamingChatCompletion from './pages/gemini/GeminiStreamingChatCompletion'
+import GeminiStructuredChatCompletion from './pages/gemini/GeminiStructuredChatCompletion'
+import GeminiSynchronousChatCompletion from './pages/gemini/GeminiSynchronousChatCompletion'
 import Home from './pages/Home'
 import OpenaiStreamingChatCompletion from './pages/openai/OpenaiStreamingChatCompletion'
+import OpenaiStructuredChatCompletion from './pages/openai/OpenaiStructuredChatCompletion'
 import OpenaiSynchronousChatCompletion from './pages/openai/OpenaiSynchronousChatCompletion'
-import OpenaiSynchronousChatCompletionWithFormatting from './pages/openai/OpenaiSynchronousChatCompletionWithFormatting'
-import AnthropicStreamingChatCompletion from './pages/anthropic/AnthropicStreamingChatCompletion'
-import AnthropicSynchronousChatCompletion from './pages/anthropic/AnthropicSynchronousChatCompletion'
-import AnthropicSynchronousChatCompletionWithFormatting from './pages/anthropic/AnthropicSynchronousChatCompletionWithFormatting'
-import GeminiStreamingChatCompletion from './pages/gemini/GeminiStreamingChatCompletion'
-import GeminiSynchronousChatCompletion from './pages/gemini/GeminiSynchronousChatCompletion'
-import GeminiSynchronousChatCompletionWithFormatting from './pages/gemini/GeminiSynchronousChatCompletionWithFormatting'
 import { routes } from './routes'
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
             />
             <Route
                 path={routes.openai.synchronousChatCompletionWithFormatting}
-                element={<OpenaiSynchronousChatCompletionWithFormatting />}
+                element={<OpenaiStructuredChatCompletion />}
             />
             <Route
                 path={routes.openai.streamingChatCompletion}
@@ -33,7 +33,7 @@ function App() {
             />
             <Route
                 path={routes.anthropic.synchronousChatCompletionWithFormatting}
-                element={<AnthropicSynchronousChatCompletionWithFormatting />}
+                element={<AnthropicStructuredChatCompletion />}
             />
             <Route
                 path={routes.anthropic.streamingChatCompletion}
@@ -45,7 +45,7 @@ function App() {
             />
             <Route
                 path={routes.gemini.synchronousChatCompletionWithFormatting}
-                element={<GeminiSynchronousChatCompletionWithFormatting />}
+                element={<GeminiStructuredChatCompletion />}
             />
             <Route
                 path={routes.gemini.streamingChatCompletion}

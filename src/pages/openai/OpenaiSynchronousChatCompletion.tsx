@@ -4,7 +4,7 @@ export default function OpenaiSynchronousChatCompletion() {
     const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
-        await chatCompletions.createSynchronousChatCompletion({
+        await chatCompletions.createChatCompletion({
             openai: {
                 model: 'gpt-4o-mini',
                 messages: [

@@ -7,14 +7,12 @@ const responseFormat = z.object({
     age: z.number(),
 })
 
-export default function GeminiSynchronousChatCompletionWithFormatting() {
+export default function GeminiStructuredChatCompletion() {
     const chatCompletions = useChatCompletions()
-    const [result, setResult] = useState<z.infer<typeof responseFormat> | null>(
-        null
-    )
+    const [result, setResult] = useState<z.infer<typeof responseFormat>>()
 
     const handleClick = async () => {
-        const result = await chatCompletions.createSynchronousChatCompletion({
+        const result = await chatCompletions.createStructuredChatCompletion({
             gemini: {
                 model: 'gemini-2.5-flash-lite-preview-06-17',
                 content:
@@ -23,7 +21,7 @@ export default function GeminiSynchronousChatCompletionWithFormatting() {
             responseFormat,
         })
 
-        setResult(result.structuredResponse ?? null)
+        setResult(result.structuredResponse)
     }
 
     return (
