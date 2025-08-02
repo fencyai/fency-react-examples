@@ -4,7 +4,7 @@ export default function OpenaiStreamingChatCompletion() {
     const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
-        const result = await chatCompletions.createStreamingChatCompletion({
+        await chatCompletions.createStreamingChatCompletion({
             openai: {
                 model: 'gpt-4o-mini',
                 messages: [
@@ -16,8 +16,6 @@ export default function OpenaiStreamingChatCompletion() {
                 ],
             },
         })
-
-        console.log(result)
     }
 
     return (

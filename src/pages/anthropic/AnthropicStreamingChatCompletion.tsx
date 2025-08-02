@@ -4,19 +4,18 @@ export default function AnthropicStreamingChatCompletion() {
     const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
-        const result = await chatCompletions.createStreamingChatCompletion({
+        await chatCompletions.createStreamingChatCompletion({
             anthropic: {
                 model: 'claude-sonnet-4-0',
                 messages: [
                     {
                         role: 'user',
-                        content: 'Please write a short story about a cat using 200 words.',
+                        content:
+                            'Please write a short story about a cat using 200 words.',
                     },
                 ],
             },
         })
-
-        console.log(result)
     }
 
     return (
@@ -27,4 +26,4 @@ export default function AnthropicStreamingChatCompletion() {
             </div>
         </div>
     )
-} 
+}
