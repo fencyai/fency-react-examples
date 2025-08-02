@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router'
 import AnthropicStreamingChatCompletion from './pages/anthropic/AnthropicStreamingChatCompletion'
-import AnthropicStructuredChatCompletion from './pages/anthropic/AnthropicStructuredChatCompletion'
 import AnthropicSynchronousChatCompletion from './pages/anthropic/AnthropicSynchronousChatCompletion'
 import GeminiStreamingChatCompletion from './pages/gemini/GeminiStreamingChatCompletion'
 import GeminiStructuredChatCompletion from './pages/gemini/GeminiStructuredChatCompletion'
@@ -20,7 +19,7 @@ function App() {
                 element={<OpenaiSynchronousChatCompletion />}
             />
             <Route
-                path={routes.openai.synchronousChatCompletionWithFormatting}
+                path={routes.openai.structuredChatCompletion}
                 element={<OpenaiStructuredChatCompletion />}
             />
             <Route
@@ -32,10 +31,6 @@ function App() {
                 element={<AnthropicSynchronousChatCompletion />}
             />
             <Route
-                path={routes.anthropic.synchronousChatCompletionWithFormatting}
-                element={<AnthropicStructuredChatCompletion />}
-            />
-            <Route
                 path={routes.anthropic.streamingChatCompletion}
                 element={<AnthropicStreamingChatCompletion />}
             />
@@ -44,7 +39,7 @@ function App() {
                 element={<GeminiSynchronousChatCompletion />}
             />
             <Route
-                path={routes.gemini.synchronousChatCompletionWithFormatting}
+                path={routes.gemini.structuredChatCompletion}
                 element={<GeminiStructuredChatCompletion />}
             />
             <Route

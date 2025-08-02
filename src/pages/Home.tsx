@@ -14,7 +14,7 @@ export default function Home() {
                     Unstructured Chat Completion
                 </Link>
                 <Link
-                    to={routes.openai.synchronousChatCompletionWithFormatting}
+                    to={routes.openai.structuredChatCompletion}
                     className="text-blue-500"
                 >
                     Structured Chat Completion
@@ -35,14 +35,6 @@ export default function Home() {
                     Unstructured Chat Completion
                 </Link>
                 <Link
-                    to={
-                        routes.anthropic.synchronousChatCompletionWithFormatting
-                    }
-                    className="text-blue-500"
-                >
-                    Structured Chat Completion
-                </Link>
-                <Link
                     to={routes.anthropic.streamingChatCompletion}
                     className="text-blue-500"
                 >
@@ -59,7 +51,7 @@ export default function Home() {
                     Unstructured Chat Completion
                 </Link>
                 <Link
-                    to={routes.gemini.synchronousChatCompletionWithFormatting}
+                    to={routes.gemini.structuredChatCompletion}
                     className="text-blue-500"
                 >
                     Structured Chat Completion
