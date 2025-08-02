@@ -1,18 +1,13 @@
-import { useChatCompletion } from '@fencyai/react'
+import { useChatCompletions } from '@fencyai/react'
 
-export default function StreamingChatCompletion() {
-    const chatCompletions = useChatCompletion()
+export default function GeminiStreamingChatCompletion() {
+    const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
         const result = await chatCompletions.createStreamingChatCompletion({
-            openai: {
-                model: 'gpt-4o-mini',
-                messages: [
-                    {
-                        role: 'user',
-                        content: 'Please write a short story about a cat.',
-                    },
-                ],
+            gemini: {
+                model: 'gemini-2.5-flash-lite-preview-06-17',
+                content: 'Please write a short story about a bird.',
             },
         })
 

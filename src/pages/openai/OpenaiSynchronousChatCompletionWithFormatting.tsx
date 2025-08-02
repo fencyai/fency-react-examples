@@ -1,4 +1,4 @@
-import { useChatCompletion } from '@fencyai/react'
+import { useChatCompletions } from '@fencyai/react'
 import { useState } from 'react'
 import { z } from 'zod'
 
@@ -7,8 +7,8 @@ const responseFormat = z.object({
     age: z.number(),
 })
 
-export default function SynchronousChatCompletionWithFormatting() {
-    const chatCompletions = useChatCompletion()
+export default function OpenaiSynchronousChatCompletionWithFormatting() {
+    const chatCompletions = useChatCompletions()
     const [result, setResult] = useState<z.infer<typeof responseFormat> | null>(
         null
     )

@@ -1,12 +1,12 @@
-import { useChatCompletion } from '@fencyai/react'
+import { useChatCompletions } from '@fencyai/react'
 
-export default function SynchronousChatCompletion() {
-    const chatCompletions = useChatCompletion()
+export default function AnthropicSynchronousChatCompletion() {
+    const chatCompletions = useChatCompletions()
 
     const handleClick = async () => {
         await chatCompletions.createSynchronousChatCompletion({
-            openai: {
-                model: 'gpt-4o-mini',
+            anthropic: {
+                model: 'claude-sonnet-4-0',
                 messages: [
                     {
                         role: 'user',
@@ -25,4 +25,4 @@ export default function SynchronousChatCompletion() {
             </pre>
         </div>
     )
-}
+} 
