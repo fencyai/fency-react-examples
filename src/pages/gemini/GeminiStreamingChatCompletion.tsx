@@ -17,7 +17,7 @@ export default function GeminiStreamingChatCompletion() {
         <div className="m-2">
             <button onClick={handleClick}>Send Message</button>
             <div className="whitespace-pre-wrap max-w-lg">
-                {chatCompletions.latestCompletion?.fullMessage}
+                {chatCompletions.latest?.response}
             </div>
         </div>
     )

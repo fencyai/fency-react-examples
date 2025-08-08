@@ -1,5 +1,5 @@
 import { loadFency } from '@fencyai/js'
-import { ChatCompletionProvider } from '@fencyai/react'
+import { FencyProvider } from '@fencyai/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
@@ -16,9 +16,9 @@ const fency = loadFency({
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
-            <ChatCompletionProvider fency={fency}>
+            <FencyProvider fency={fency}>
                 <App />
-            </ChatCompletionProvider>
+            </FencyProvider>
         </BrowserRouter>
     </StrictMode>
 )

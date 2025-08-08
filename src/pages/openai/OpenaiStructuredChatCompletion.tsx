@@ -38,6 +38,7 @@ export default function OpenaiStructuredChatCompletion() {
                     <pre className="text-xs">
                         {JSON.stringify(result, null, 2)}
                     </pre>
+                    People twice as old as {result.name} are {result.age * 2}
                 </div>
             )}
         </div>

@@ -20,9 +20,9 @@ export default function OpenaiStreamingChatCompletion() {
 
     return (
         <div className="m-2">
-            <button onClick={handleClick}>Send Message</button>
+            <button onClick={handleClick}>Write a story</button>
             <div className="whitespace-pre-wrap max-w-lg">
-                {chatCompletions.latestCompletion?.fullMessage}
+                {chatCompletions.latest?.response}
             </div>
         </div>
     )
