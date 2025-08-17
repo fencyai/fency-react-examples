@@ -26,7 +26,9 @@ export default function OpenaiStructuredChatCompletion() {
             responseFormat,
         })
 
-        setResult(result.structuredResponse)
+        if (result.type === 'success') {
+            setResult(result.chatCompletion.structuredResponse)
+        }
     }
 
     return (
