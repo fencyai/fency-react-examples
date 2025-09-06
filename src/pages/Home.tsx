@@ -1,68 +1,76 @@
-import { Link } from 'react-router'
-import { routes } from '../routes'
+import { Title, Text, Container, Stack, Card } from '@mantine/core'
 
 export default function Home() {
     return (
-        <div className="flex flex-col items-center justify-center h-screen w-screen">
-            <span className="text-4xl font-bold">Fency React Examples</span>
-            <div className="mt-3 flex flex-col gap-2 items-center">
-                <h2 className="text-2xl font-bold">OpenAI</h2>
-                <Link
-                    to={routes.openai.synchronousChatCompletion}
-                    className="text-blue-500"
-                >
-                    Unstructured Chat Completion
-                </Link>
-                <Link
-                    to={routes.openai.structuredChatCompletion}
-                    className="text-blue-500"
-                >
-                    Structured Chat Completion
-                </Link>
-                <Link
-                    to={routes.openai.streamingChatCompletion}
-                    className="text-blue-500"
-                >
-                    Streaming Chat Completion
-                </Link>
-            </div>
-            <div className="mt-3 flex flex-col gap-2 items-center">
-                <h2 className="text-2xl font-bold">Anthropic</h2>
-                <Link
-                    to={routes.anthropic.synchronousChatCompletion}
-                    className="text-blue-500"
-                >
-                    Unstructured Chat Completion
-                </Link>
-                <Link
-                    to={routes.anthropic.streamingChatCompletion}
-                    className="text-blue-500"
-                >
-                    Streaming Chat Completion
-                </Link>
-            </div>
+        <Container size="lg">
+            <Stack gap="xl">
+                <div>
+                    <Title order={1} mb="md">
+                        Welcome to React Examples
+                    </Title>
+                    <Text size="lg" c="dimmed">
+                        Explore various AI chat completion examples using different providers and patterns.
+                    </Text>
+                </div>
 
-            <div className="mt-3 flex flex-col gap-2 items-center">
-                <h2 className="text-2xl font-bold">Gemini</h2>
-                <Link
-                    to={routes.gemini.synchronousChatCompletion}
-                    className="text-blue-500"
-                >
-                    Unstructured Chat Completion
-                </Link>
-                <Link
-                    to={routes.gemini.structuredChatCompletion}
-                    className="text-blue-500"
-                >
-                    Structured Chat Completion
-                </Link>
-                <Link
-                    to={routes.gemini.streamingChatCompletion}
-                    className="text-blue-500"
-                >
-                    Streaming Chat Completion
-                </Link>
-            </div>
-        </div>
+                <div>
+                    <Title order={2} mb="md">
+                        Available Examples
+                    </Title>
+                    <Stack gap="md">
+                        <Card shadow="sm" padding="lg" radius="md" withBorder>
+                            <Title order={3} mb="sm">
+                                OpenAI Examples
+                            </Title>
+                            <Text size="sm" c="dimmed" mb="sm">
+                                Explore OpenAI's chat completion capabilities
+                            </Text>
+                            <ul>
+                                <li>Synchronous Chat Completion</li>
+                                <li>Structured Chat Completion (with Zod schemas)</li>
+                                <li>Streaming Chat Completion</li>
+                            </ul>
+                        </Card>
+
+                        <Card shadow="sm" padding="lg" radius="md" withBorder>
+                            <Title order={3} mb="sm">
+                                Anthropic Examples
+                            </Title>
+                            <Text size="sm" c="dimmed" mb="sm">
+                                Discover Anthropic's Claude API features
+                            </Text>
+                            <ul>
+                                <li>Synchronous Chat Completion</li>
+                                <li>Streaming Chat Completion</li>
+                            </ul>
+                        </Card>
+
+                        <Card shadow="sm" padding="lg" radius="md" withBorder>
+                            <Title order={3} mb="sm">
+                                Gemini Examples
+                            </Title>
+                            <Text size="sm" c="dimmed" mb="sm">
+                                Try Google's Gemini AI capabilities
+                            </Text>
+                            <ul>
+                                <li>Synchronous Chat Completion</li>
+                                <li>Structured Chat Completion (with Zod schemas)</li>
+                                <li>Streaming Chat Completion</li>
+                            </ul>
+                        </Card>
+                    </Stack>
+                </div>
+
+                <div>
+                    <Title order={2} mb="md">
+                        Getting Started
+                    </Title>
+                    <Text size="sm" c="dimmed">
+                        Use the sidebar to navigate between different examples. Each example demonstrates
+                        a specific pattern for working with AI chat completion APIs.
+                    </Text>
+                </div>
+            </Stack>
+        </Container>
     )
 }
