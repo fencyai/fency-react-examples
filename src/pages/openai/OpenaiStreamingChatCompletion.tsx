@@ -1,3 +1,4 @@
+import { Response } from '@/components/response'
 import { useChatCompletions } from '@fencyai/react'
 
 export default function OpenaiStreamingChatCompletion() {
@@ -11,7 +12,7 @@ export default function OpenaiStreamingChatCompletion() {
                     {
                         role: 'user',
                         content:
-                            'Please write a short story about a cat using 200 words.',
+                            'Show a table of 3 hollywood actors and their ages.',
                     },
                 ],
             },
@@ -21,9 +22,9 @@ export default function OpenaiStreamingChatCompletion() {
     return (
         <div className="m-2">
             <button onClick={handleClick}>Write a story</button>
-            <div className="whitespace-pre-wrap max-w-lg">
-                {chatCompletions.latest?.response}
-            </div>
+            {chatCompletions.latest?.response && (
+                <Response>{chatCompletions.latest.response}</Response>
+            )}
         </div>
     )
 }

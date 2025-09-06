@@ -1,3 +1,4 @@
+import { Response } from '@/components/response'
 import { useChatCompletions } from '@fencyai/react'
 
 export default function AnthropicStreamingChatCompletion() {
@@ -22,7 +23,9 @@ export default function AnthropicStreamingChatCompletion() {
         <div className="m-2">
             <button onClick={handleClick}>Send Message</button>
             <div className="whitespace-pre-wrap max-w-lg">
-                {chatCompletions.latest?.response}
+                {chatCompletions.latest?.response && (
+                    <Response>{chatCompletions.latest.response}</Response>
+                )}
             </div>
         </div>
     )
