@@ -1,15 +1,16 @@
 import CodeExample from '@/CodeExample'
 import { Title } from '@mantine/core'
 import ExampleLayout from '../../../ExampleLayout'
+
 import Example from './Example'
 import exampleCode from './Example.tsx?raw'
 
-export default function BasicChatCompletionPage() {
+export default function StreamingChatCompletionPage() {
     const example = <Example />
     return (
         <ExampleLayout
-            title="Basic Chat Completion"
-            description="Simple chat completion with synchronous response."
+            title="Streaming Chat Completion"
+            description="Real-time response with streaming."
         >
             <Title order={3} className="text-gray-400 pb-2">
                 Example

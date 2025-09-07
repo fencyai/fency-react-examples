@@ -1,6 +1,6 @@
 import { Response } from '@/components/response'
 import { useChatCompletions } from '@fencyai/react'
-import { Button, Loader, Textarea } from '@mantine/core'
+import { Button, Textarea } from '@mantine/core'
 import { IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
@@ -11,8 +11,8 @@ export default function Example() {
     )
 
     // Get the response and loading state from the latest chat completion
-    const response = chatCompletions.latest?.basic?.data?.response
-    const loading = chatCompletions.latest?.basic?.loading
+    const response = chatCompletions.latest?.streaming?.response
+    const loading = chatCompletions.latest?.streaming?.loading
 
     return (
         <div className="flex flex-col gap-2">
@@ -21,15 +21,9 @@ export default function Example() {
                 {response == null && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                         <span className="text-gray-500">
-                            {loading
-                                ? 'Loading response...'
-                                : 'Waiting for your first prompt!'}
+                            Waiting for your first prompt!
                         </span>
-                        {loading ? (
-                            <Loader className="text-gray-400" size="xs" />
-                        ) : (
-                            <IconArrowDown className="text-gray-400" />
-                        )}
+                        <IconArrowDown className="text-gray-400" />
                     </div>
                 )}
             </div>
@@ -44,7 +38,7 @@ export default function Example() {
                 <Button
                     loading={loading}
                     onClick={() => {
-                        chatCompletions.createChatCompletion({
+                        chatCompletions.createStreamingChatCompletion({
                             openai: {
                                 messages: [
                                     {

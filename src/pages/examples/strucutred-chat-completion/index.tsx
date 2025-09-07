@@ -4,12 +4,12 @@ import ExampleLayout from '../../../ExampleLayout'
 import Example from './Example'
 import exampleCode from './Example.tsx?raw'
 
-export default function BasicChatCompletionPage() {
+export default function StructuredChatCompletionPage() {
     const example = <Example />
     return (
         <ExampleLayout
-            title="Basic Chat Completion"
-            description="Simple chat completion with synchronous response."
+            title="Structured Chat Completion"
+            description="JSON response using a Zod schema."
         >
             <Title order={3} className="text-gray-400 pb-2">
                 Example

@@ -18,7 +18,7 @@ import '@mantine/core/styles.css'
 async function loadShiki() {
     const { createHighlighter } = await import('shiki')
     const shiki = await createHighlighter({
-        langs: ['tsx', 'scss', 'html', 'bash', 'json'],
+        langs: ['tsx', 'json'],
         themes: [],
     })
 

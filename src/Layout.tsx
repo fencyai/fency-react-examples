@@ -54,21 +54,21 @@ export default function Layout() {
                         }
                     />
                     <SidebarElement
-                        title="Structured Chat Completion"
-                        description="JSON response using a Zod schema"
-                        href={routes.examples.structuredChatCompletion}
-                        selected={
-                            location.pathname ===
-                            routes.examples.structuredChatCompletion
-                        }
-                    />
-                    <SidebarElement
                         title="Streaming Chat Completion"
                         description="Real-time response with streaming"
                         href={routes.examples.streamingChatCompletion}
                         selected={
                             location.pathname ===
                             routes.examples.streamingChatCompletion
+                        }
+                    />
+                    <SidebarElement
+                        title="Structured Chat Completion"
+                        description="JSON response using a Zod schema"
+                        href={routes.examples.structuredChatCompletion}
+                        selected={
+                            location.pathname ===
+                            routes.examples.structuredChatCompletion
                         }
                     />
                 </div>
