@@ -1,6 +1,7 @@
 import { useChatCompletions } from '@fencyai/react'
 import { CodeHighlight } from '@mantine/code-highlight'
-import { Button } from '@mantine/core'
+import { Alert, Button } from '@mantine/core'
+import { IconAlertCircle } from '@tabler/icons-react'
 import { useState } from 'react'
 import { z } from 'zod'
 
@@ -14,12 +15,13 @@ const responseSchema = z.object({
 })
 
 export default function Example() {
-    const chatCompletions = useChatCompletions()
+    const { createStructuredChatCompletion, latest } = useChatCompletions()
     const [oldestActor, setOldestActor] = useState<string | null>(null)
 
     // Get the response and loading state from the latest chat completion
-    const response = chatCompletions.latest?.structured?.data?.response
-    const loading = chatCompletions.latest?.structured?.loading
+    const response = latest?.structured?.data?.response
+    const loading = latest?.structured?.loading
+    const error = latest?.structured?.error
 
     return (
         <div className="flex flex-col gap-2 mb-4">
@@ -54,22 +56,19 @@ export default function Example() {
                     loading={loading}
                     color="indigo"
                     onClick={async () => {
-                        const response =
-                            await chatCompletions.createStructuredChatCompletion(
-                                {
-                                    openai: {
-                                        messages: [
-                                            {
-                                                role: 'user',
-                                                content:
-                                                    'Show me 3 different actors where each actor is born in a different year.',
-                                            },
-                                        ],
-                                        model: 'gpt-4o',
+                        const response = await createStructuredChatCompletion({
+                            openai: {
+                                messages: [
+                                    {
+                                        role: 'user',
+                                        content:
+                                            'Show me 3 different actors where each actor is born in a different year.',
                                     },
-                                    responseFormat: responseSchema,
-                                }
-                            )
+                                ],
+                                model: 'gpt-4o',
+                            },
+                            responseFormat: responseSchema,
+                        })
                         if (response.type === 'success') {
                             const oldestActor =
                                 response.data.structuredResponse.actors.sort(
@@ -83,6 +82,18 @@ export default function Example() {
                     different year.
                 </Button>
             </div>
+            {error && (
+                <Alert
+                    variant="light"
+                    color="red"
+                    radius="md"
+                    title="Alert title"
+                    icon={<IconAlertCircle />}
+                    className="whitespace-pre-wrap"
+                >
+                    {error.message}
+                </Alert>
+            )}
         </div>
     )
 }

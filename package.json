@@ -15,8 +15,8 @@
         "compile": "tsc --noEmit"
     },
     "dependencies": {
-        "@fencyai/js": "0.1.41",
-        "@fencyai/react": "0.1.41",
+        "@fencyai/js": "0.1.42",
+        "@fencyai/react": "0.1.42",
         "@mantine/code-highlight": "^8.2.8",
         "@mantine/core": "^8.2.8",
         "@mantine/hooks": "^8.2.8",

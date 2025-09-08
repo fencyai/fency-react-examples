@@ -1,18 +1,19 @@
 import { Response } from '@/components/response'
 import { useChatCompletions } from '@fencyai/react'
-import { Button, Textarea } from '@mantine/core'
-import { IconArrowDown } from '@tabler/icons-react'
+import { Alert, Button, Textarea } from '@mantine/core'
+import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
 export default function Example() {
-    const chatCompletions = useChatCompletions()
+    const { createStreamingChatCompletion, latest } = useChatCompletions()
     const [prompt, setPrompt] = useState(
         'Show me a table of 5 famous actors and their most popular movies.'
     )
 
     // Get the response and loading state from the latest chat completion
-    const response = chatCompletions.latest?.streaming?.response
-    const loading = chatCompletions.latest?.streaming?.loading
+    const response = latest?.streaming?.response
+    const loading = latest?.streaming?.loading
+    const error = latest?.streaming?.error
 
     return (
         <div className="flex flex-col gap-2">
@@ -38,7 +39,7 @@ export default function Example() {
                 <Button
                     loading={loading}
                     onClick={() => {
-                        chatCompletions.createStreamingChatCompletion({
+                        createStreamingChatCompletion({
                             openai: {
                                 messages: [
                                     {
@@ -54,6 +55,18 @@ export default function Example() {
                     Send message
                 </Button>
             </div>
+            {error && (
+                <Alert
+                    variant="light"
+                    color="red"
+                    radius="md"
+                    title="Alert title"
+                    icon={<IconAlertCircle />}
+                    className="whitespace-pre-wrap"
+                >
+                    {error.message}
+                </Alert>
+            )}
         </div>
     )
 }
