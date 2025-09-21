@@ -16,4 +16,14 @@ export const examples = [
         description: 'JSON response using a Zod schema',
         href: routes.examples.structuredChatCompletion,
     },
+    {
+        title: 'Extracting Website Content',
+        description: 'Extracting the content of a website',
+        href: routes.examples.extractingWebsiteContent,
+    },
+    {
+        title: 'Extracting File Content',
+        description: 'Extracting the content of a file',
+        href: routes.examples.extractingFileContent,
+    },
 ]
