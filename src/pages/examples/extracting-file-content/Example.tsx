@@ -11,6 +11,9 @@ export default function Example() {
         onUploadComplete(fileUpload) {
             console.log('Upload complete', fileUpload)
         },
+        onFileTextContentReady(fileTextContentReady) {
+            console.log('File text content ready', fileTextContentReady)
+        },
     })
 
     const uppy = useMemo(() => {
