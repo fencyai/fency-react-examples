@@ -28,5 +28,5 @@
             "@components/*": ["./src/components/*"]
         }
     },
-    "include": ["src", "express"]
+    "include": ["src", "express", "scripts"]
 }
