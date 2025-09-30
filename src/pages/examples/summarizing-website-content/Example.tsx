@@ -1,44 +1,31 @@
 import type { ApiError } from '@fencyai/js'
 import { useChatCompletions, useWebsites } from '@fencyai/react'
-import { CodeHighlight } from '@mantine/code-highlight'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
 import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
-import z from 'zod'
-
-const responseSchema = z.object({
-    owningCompanyName: z.string(),
-    mainPurposeOfWebsite: z.string(),
-})
 
 export default function Example() {
     const website = useWebsites()
-    const { createStructuredChatCompletion, latest } = useChatCompletions()
+    const { createStreamingChatCompletion, latest } = useChatCompletions()
     const [scrapingError, setScrapingError] = useState<ApiError | null>(null)
     const [isScraping, setIsScraping] = useState(false)
-    const [url, setUrl] = useState('https://www.google.com')
-    const [response, setResponse] = useState<z.infer<
-        typeof responseSchema
-    > | null>(null)
+    const [url, setUrl] = useState('https://google.com')
 
     // Get the response and loading state from the latest chat completion
-    const loading = latest?.structured?.loading
-    const error = latest?.structured?.error
+    const loading = latest?.streaming?.loading
+    const error = latest?.streaming?.error
+
+    const state = getState({
+        isScraping,
+        loading: loading ?? false,
+        response: latest?.streaming?.response ?? null,
+    })
 
     return (
         <div className="flex flex-col gap-2">
             <div className="h-96 overflow-y-auto">
-                {response && (
-                    <>
-                        <CodeHighlight
-                            code={JSON.stringify(response, null, 2)}
-                            language="json"
-                            radius="md"
-                            background="transparent"
-                        />
-                    </>
-                )}
-                {response == null && (
+                {state === 'summarizing' && latest?.streaming?.response}
+                {state === 'waiting_for_url' && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                         <span className="text-gray-500">
                             Waiting for your url!
@@ -46,10 +33,18 @@ export default function Example() {
                         <IconArrowDown className="text-gray-400" />
                     </div>
                 )}
-                {loading && (
+                {state === 'scraping' && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                         <span className="text-gray-500">
-                            Loading response...
+                            Scraping website...
+                        </span>
+                        <Loader size="xs" />
+                    </div>
+                )}
+                {state === 'loading' && (
+                    <div className="flex flex-col justify-center items-center w-full h-full">
+                        <span className="text-gray-500">
+                            Summarizing website content...
                         </span>
                         <Loader size="xs" />
                     </div>
@@ -64,29 +59,25 @@ export default function Example() {
             />
             <div className="flex justify-end">
                 <Button
-                    loading={loading || isScraping}
+                    disabled={
+                        state !== 'waiting_for_url' && state !== 'summarizing'
+                    }
                     onClick={async () => {
                         setIsScraping(true)
+
                         const response = await website.scrapeContent({
                             url: url,
                         })
                         setIsScraping(false)
                         if (response.type === 'success') {
-                            const structuredResponse =
-                                await createStructuredChatCompletion({
-                                    gemini: {
-                                        content:
-                                            'Extract the following information from the website: ' +
-                                            response.website.content,
-                                        model: 'gemini-2.5-flash-lite-preview-06-17',
-                                    },
-                                    responseFormat: responseSchema,
-                                })
-                            if (structuredResponse.type === 'success') {
-                                setResponse(
-                                    structuredResponse.data.structuredResponse
-                                )
-                            }
+                            createStreamingChatCompletion({
+                                gemini: {
+                                    content:
+                                        'Give a short summary of the following website: ' +
+                                        response.website.content,
+                                    model: 'gemini-2.5-flash-lite-preview-06-17',
+                                },
+                            })
                         } else {
                             setScrapingError(response.error)
                         }
@@ -121,4 +112,21 @@ export default function Example() {
             )}
         </div>
     )
+}
+
+const getState = (values: {
+    isScraping: boolean
+    loading: boolean
+    response: string | null
+}): 'scraping' | 'loading' | 'summarizing' | 'waiting_for_url' => {
+    if (values.isScraping) {
+        return 'scraping'
+    }
+    if (values.response && values.response.length > 0) {
+        return 'summarizing'
+    }
+    if (values.loading) {
+        return 'loading'
+    }
+    return 'waiting_for_url'
 }
