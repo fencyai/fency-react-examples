@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router'
 import Layout from './Layout'
 import BasicChatCompletionPage from './pages/examples/basic-chat-completion'
-import ExtractingFileContentPage from './pages/examples/extracting-file-content'
-import ExtractingWebsiteContentPage from './pages/examples/extracting-website-content'
 import StreamingChatCompletionPage from './pages/examples/streaming-chat-completion'
 import StructuredChatCompletionPage from './pages/examples/structured-chat-completion'
+import SummarizingFileContentPage from './pages/examples/summarizing-file-content'
+import SummarizingWebsiteContentPage from './pages/examples/summarizing-website-content'
 import Home from './pages/Home'
 import { routes } from './routes'
 
@@ -26,14 +26,15 @@ function App() {
                     element={<StructuredChatCompletionPage />}
                 />
                 <Route
-                    path={routes.examples.extractingWebsiteContent}
-                    element={<ExtractingWebsiteContentPage />}
+                    path={routes.examples.summarizingWebsiteContent}
+                    element={<SummarizingWebsiteContentPage />}
                 />
                 <Route
-                    path={routes.examples.extractingFileContent}
-                    element={<ExtractingFileContentPage />}
+                    path={routes.examples.summarizingFileContent}
+                    element={<SummarizingFileContentPage />}
                 />
                 <Route path={'*'} element={<Navigate to="/" replace />} />
+                <Route path={'*/*'} element={<Navigate to="/" replace />} />
             </Route>
         </Routes>
     )

@@ -17,13 +17,13 @@ export const examples = [
         href: routes.examples.structuredChatCompletion,
     },
     {
-        title: 'Extracting Website Content',
-        description: 'Extracting the content of a website',
-        href: routes.examples.extractingWebsiteContent,
+        title: 'Summarizing Website Content',
+        description: 'Summarizing the content of a website',
+        href: routes.examples.summarizingWebsiteContent,
     },
     {
-        title: 'Extracting File Content',
-        description: 'Extracting the content of a file',
-        href: routes.examples.extractingFileContent,
+        title: 'Summarizing File Content',
+        description: 'Summarizing the content of a file',
+        href: routes.examples.summarizingFileContent,
     },
 ]

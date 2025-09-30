@@ -4,12 +4,12 @@ import ExampleLayout from '../../../ExampleLayout'
 import Example from './Example'
 import exampleCode from './Example.tsx?raw'
 
-export default function ExtractingFileContentPage() {
+export default function SummarizingFileContentPage() {
     const example = <Example />
     return (
         <ExampleLayout
-            title="Extracting File Content"
-            description="Extracting the content of a file."
+            title="Summarizing File Content"
+            description="Summarizing the content of a file."
         >
             <Title order={3} className="text-gray-400 pb-2">
                 Example

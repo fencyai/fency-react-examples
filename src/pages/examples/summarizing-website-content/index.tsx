@@ -4,12 +4,12 @@ import ExampleLayout from '../../../ExampleLayout'
 import Example from './Example'
 import exampleCode from './Example.tsx?raw'
 
-export default function ExtractingWebsiteContentPage() {
+export default function SummarizingWebsiteContentPage() {
     const example = <Example />
     return (
         <ExampleLayout
-            title="Extracting Website Content"
-            description="Extracting the content of a website."
+            title="Summarizing Website Content"
+            description="Summarizing the content of a website."
         >
             <Title order={3} className="text-gray-400 pb-2">
                 Example

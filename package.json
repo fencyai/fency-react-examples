@@ -10,7 +10,6 @@
         "lint": "eslint .",
         "preview": "vite preview",
         "ci": "npm run lint && npm run build",
-        "express": "tsx express/server.ts",
         "check-file-refs": "tsx scripts/check-file-refs.ts",
         "set-local-deps": "tsx scripts/set-local-deps.ts && npm install",
         "set-remote-deps": "tsx scripts/set-remote-deps.ts && npm install",
@@ -29,7 +28,6 @@
         "@uppy/react": "^5.0.3",
         "axios": "^1.11.0",
         "clsx": "^2.1.1",
-        "express": "^5.1.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-router": "^7.6.3",
@@ -41,7 +39,6 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.30.1",
-        "@types/express": "^5.0.3",
         "@types/node": "^24.3.0",
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",

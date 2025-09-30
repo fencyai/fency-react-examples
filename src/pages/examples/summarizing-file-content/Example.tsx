@@ -1,4 +1,6 @@
-import { useFileUploads } from '@fencyai/react'
+import { useChatCompletions, useFileUploads } from '@fencyai/react'
+import { Loader } from '@mantine/core'
+import { IconAlertCircle, IconArrowUp } from '@tabler/icons-react'
 import AwsS3 from '@uppy/aws-s3'
 import Uppy, { type Meta, type UppyFile } from '@uppy/core'
 import '@uppy/core/css/style.min.css'
@@ -7,19 +9,29 @@ import { Dashboard } from '@uppy/react'
 import { useMemo } from 'react'
 
 export default function Example() {
-    const { fileUploads, createFileUpload } = useFileUploads({
-        onUploadComplete(fileUpload) {
-            console.log('Upload complete', fileUpload)
-        },
+    const chatCompletions = useChatCompletions()
+    const { createFileUpload, fileUploads } = useFileUploads({
         onFileTextContentReady(fileTextContentReady) {
-            console.log('File text content ready', fileTextContentReady)
+            chatCompletions.createStreamingChatCompletion({
+                openai: {
+                    messages: [
+                        {
+                            role: 'user',
+                            content:
+                                'Summarize the following file content: ' +
+                                fileTextContentReady.text,
+                        },
+                    ],
+                    model: 'gpt-4.1-nano',
+                },
+            })
         },
     })
 
     const uppy = useMemo(() => {
         const u = new Uppy({
             restrictions: {
-                maxNumberOfFiles: 10,
+                maxNumberOfFiles: 1,
                 allowedFileTypes: ['application/pdf'],
             },
             autoProceed: false,
@@ -92,10 +104,55 @@ export default function Example() {
         return u
     }, [])
 
+    let statusMeta: {
+        status: string
+        icon: React.ReactNode
+    } = {
+        status: 'Waiting for your file!',
+        icon: <IconArrowUp className="text-gray-400" />,
+    }
+    if (fileUploads.length > 0) {
+        if (fileUploads[0].status === 'uploading') {
+            statusMeta = {
+                status: 'Uploading your file...',
+                icon: <Loader color="blue" size="xs" />,
+            }
+        }
+        if (fileUploads[0].status === 'upload_complete') {
+            statusMeta = {
+                status: 'Getting the text content of your file...',
+                icon: <Loader color="blue" size="xs" />,
+            }
+        }
+        if (fileUploads[0].status === 'upload_failed') {
+            statusMeta = {
+                status: 'Failed to upload your file...',
+                icon: <IconAlertCircle className="text-gray-400" />,
+            }
+        }
+    }
+    if (chatCompletions.latest.response) {
+        statusMeta = {
+            status: 'Summarizing your file content...',
+            icon: <Loader color="blue" size="xs" />,
+        }
+    }
+
     return (
         <div className="flex flex-col gap-2">
             <Dashboard uppy={uppy} />
-            {JSON.stringify(fileUploads, null, 2)}
+            <div className="min-h-36 overflow-y-auto bg-gray-100 p-4 rounded-md mb-2 flex flex-col justify-center items-center">
+                {chatCompletions.latest.response}
+                {(chatCompletions.latest.response == null ||
+                    chatCompletions.latest.response?.length === 0) && (
+                    <div className="flex flex-col justify-center items-center w-full h-full">
+                        {statusMeta.icon}
+                        <span className="text-gray-500">
+                            {statusMeta.status}
+                        </span>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

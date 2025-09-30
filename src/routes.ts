@@ -3,8 +3,7 @@ export const routes = {
         basicChatCompletion: '/examples/basic-chat-completion',
         structuredChatCompletion: '/examples/structured-chat-completion',
         streamingChatCompletion: '/examples/streaming-chat-completion',
-        extractingWebsiteContent: '/examples/extracting-website-content',
-        extractingFileContent: '/examples/extracting-file-content',
+        summarizingWebsiteContent: '/examples/summarizing-website-content',
+        summarizingFileContent: '/examples/summarizing-file-content',
     },
 }
-
