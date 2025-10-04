@@ -1,14 +1,24 @@
-import type { ApiError } from '@fencyai/js'
+import { Response } from '@/components/response'
 import { useStreamingChatCompletions, useWebsites } from '@fencyai/react'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
 import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
 export default function Example() {
-    const { createWebsite } = useWebsites()
     const { createStreamingChatCompletion, latest } =
         useStreamingChatCompletions()
-    const [scrapingError, setScrapingError] = useState<ApiError | null>(null)
+    const { createWebsite } = useWebsites({
+        async onTextContentReady(event) {
+            await createStreamingChatCompletion({
+                gemini: {
+                    content:
+                        'Give a short summary of the following website: ' +
+                        event.textContent,
+                    model: 'gemini-2.5-flash-lite-preview-06-17',
+                },
+            })
+        },
+    })
     const [isScraping, setIsScraping] = useState(false)
     const [url, setUrl] = useState('https://google.com')
 
@@ -25,7 +35,7 @@ export default function Example() {
     return (
         <div className="flex flex-col gap-2">
             <div className="h-96 overflow-y-auto">
-                {state === 'summarizing' && latest?.response}
+                {latest?.response && <Response>{latest.response}</Response>}
                 {state === 'waiting_for_url' && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                         <span className="text-gray-500">
@@ -65,40 +75,14 @@ export default function Example() {
                     }
                     onClick={async () => {
                         setIsScraping(true)
-
-                        const response = await createWebsite({
+                        await createWebsite({
                             url: url,
                         })
-                        setIsScraping(false)
-                        if (response.type === 'success') {
-                            createStreamingChatCompletion({
-                                gemini: {
-                                    content:
-                                        'Give a short summary of the following website: ' +
-                                        response.website.content,
-                                    model: 'gemini-2.5-flash-lite-preview-06-17',
-                                },
-                            })
-                        } else {
-                            setScrapingError(response.error)
-                        }
                     }}
                 >
                     Summarize content
                 </Button>
             </div>
-            {scrapingError && (
-                <Alert
-                    variant="light"
-                    color="red"
-                    radius="md"
-                    title="Alert title"
-                    icon={<IconAlertCircle />}
-                    className="whitespace-pre-wrap"
-                >
-                    {scrapingError.message}
-                </Alert>
-            )}
             {error && (
                 <Alert
                     variant="light"
@@ -120,11 +104,11 @@ const getState = (values: {
     loading: boolean
     response: string | null
 }): 'scraping' | 'loading' | 'summarizing' | 'waiting_for_url' => {
-    if (values.isScraping) {
-        return 'scraping'
-    }
     if (values.response && values.response.length > 0) {
         return 'summarizing'
+    }
+    if (values.isScraping) {
+        return 'scraping'
     }
     if (values.loading) {
         return 'loading'

@@ -45,7 +45,6 @@ export default function Example() {
                         model: 'gpt-4.1-nano',
                     },
                 })
-            console.log(response)
 
             if (response.type === 'success') {
                 form.reset(response.data.structuredResponse)

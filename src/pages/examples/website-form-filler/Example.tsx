@@ -9,9 +9,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const formSchema = z.object({
-    companyName: z.string().min(1),
-    compayOrganizationNumber: z.string().min(1),
-    companyAddress: z.string().min(1),
+    companyName: z.string(),
+    compayOrganizationNumber: z.string(),
+    companyAddress: z.string(),
 })
 
 const linkSchema = z.object({
@@ -19,7 +19,29 @@ const linkSchema = z.object({
 })
 
 export default function Example() {
-    const { createWebsite } = useWebsites()
+    const { createWebsite } = useWebsites({
+        async onTextContentReady(event) {
+            setFormsState('getting_form_data')
+            const companyFormResponse =
+                await chatCompletions.createStructuredChatCompletion({
+                    responseFormat: formSchema,
+                    gemini: {
+                        content:
+                            'Fill out the following form based on this content: ' +
+                            event.textContent,
+                        model: 'gemini-2.5-flash-lite-preview-06-17',
+                    },
+                })
+            if (companyFormResponse.type === 'success') {
+                companyFormData.reset(
+                    companyFormResponse.data.structuredResponse
+                )
+                setFormsState('filling_form_success')
+            } else {
+                setFormsState('filling_form_error')
+            }
+        },
+    })
     const chatCompletions = useStructuredChatCompletions()
     const [formSubmitted, setFormSubmitted] = useState(false)
     const [formsState, setFormsState] = useState<
@@ -41,32 +63,9 @@ export default function Example() {
 
     const submitForm = async (values: z.infer<typeof linkSchema>) => {
         setFormsState('scraping')
-        const websiteResponse = await createWebsite({
+        await createWebsite({
             url: values.link,
         })
-        if (websiteResponse.type === 'success') {
-            setFormsState('getting_form_data')
-            const companyFormResponse =
-                await chatCompletions.createStructuredChatCompletion({
-                    responseFormat: formSchema,
-                    gemini: {
-                        content:
-                            'Fill out the following form based on this content: ' +
-                            websiteResponse.website.content,
-                        model: 'gemini-2.5-flash-lite-preview-06-17',
-                    },
-                })
-            if (companyFormResponse.type === 'success') {
-                companyFormData.reset(
-                    companyFormResponse.data.structuredResponse
-                )
-                setFormsState('filling_form_success')
-            } else {
-                setFormsState('filling_form_error')
-            }
-        } else {
-            setFormsState('filling_form_error')
-        }
     }
 
     return (
