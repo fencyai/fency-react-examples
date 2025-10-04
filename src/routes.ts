@@ -5,5 +5,7 @@ export const routes = {
         streamingChatCompletion: '/examples/streaming-chat-completion',
         summarizingWebsiteContent: '/examples/summarizing-website-content',
         summarizingFileContent: '/examples/summarizing-file-content',
+        fileFormFiller: '/examples/file-form-filler',
+        websiteFormFiller: '/examples/website-form-filler',
     },
 }

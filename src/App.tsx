@@ -1,12 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router'
 import Layout from './Layout'
 import BasicChatCompletionPage from './pages/examples/basic-chat-completion'
+import FileFormFillerPage from './pages/examples/file-form-filler'
 import StreamingChatCompletionPage from './pages/examples/streaming-chat-completion'
 import StructuredChatCompletionPage from './pages/examples/structured-chat-completion'
 import SummarizingFileContentPage from './pages/examples/summarizing-file-content'
 import SummarizingWebsiteContentPage from './pages/examples/summarizing-website-content'
 import Home from './pages/Home'
 import { routes } from './routes'
+import WebsiteFormFillerPage from './pages/examples/website-form-filler'
 
 function App() {
     return (
@@ -32,6 +34,14 @@ function App() {
                 <Route
                     path={routes.examples.summarizingFileContent}
                     element={<SummarizingFileContentPage />}
+                />
+                <Route
+                    path={routes.examples.fileFormFiller}
+                    element={<FileFormFillerPage />}
+                />
+                <Route
+                    path={routes.examples.websiteFormFiller}
+                    element={<WebsiteFormFillerPage />}
                 />
                 <Route path={'*'} element={<Navigate to="/" replace />} />
                 <Route path={'*/*'} element={<Navigate to="/" replace />} />

@@ -1,19 +1,19 @@
 import { Response } from '@/components/response'
-import { useChatCompletions } from '@fencyai/react'
+import { useBasicChatCompletions } from '@fencyai/react'
 import { Alert, Button, Loader, Textarea } from '@mantine/core'
 import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
 export default function Example() {
-    const { createChatCompletion, latest } = useChatCompletions()
+    const { createBasicChatCompletion, latest } = useBasicChatCompletions()
     const [prompt, setPrompt] = useState(
         'Show me a table of 5 famous actors and their most popular movies.'
     )
 
     // Get the response and loading state from the latest chat completion
-    const response = latest?.basic?.data?.response
-    const error = latest?.basic?.error
-    const loading = latest?.basic?.loading
+    const response = latest?.data?.response
+    const error = latest?.error
+    const loading = latest?.loading
 
     return (
         <div className="flex flex-col gap-2">
@@ -45,7 +45,7 @@ export default function Example() {
                 <Button
                     loading={loading}
                     onClick={() => {
-                        createChatCompletion({
+                        createBasicChatCompletion({
                             openai: {
                                 messages: [
                                     {

@@ -1,4 +1,4 @@
-import { useChatCompletions } from '@fencyai/react'
+import { useStructuredChatCompletions } from '@fencyai/react'
 import { CodeHighlight } from '@mantine/code-highlight'
 import { Alert, Button } from '@mantine/core'
 import { IconAlertCircle } from '@tabler/icons-react'
@@ -15,13 +15,14 @@ const responseSchema = z.object({
 })
 
 export default function Example() {
-    const { createStructuredChatCompletion, latest } = useChatCompletions()
+    const { createStructuredChatCompletion, latest } =
+        useStructuredChatCompletions()
     const [oldestActor, setOldestActor] = useState<string | null>(null)
 
     // Get the response and loading state from the latest chat completion
-    const response = latest?.structured?.data?.response
-    const loading = latest?.structured?.loading
-    const error = latest?.structured?.error
+    const response = latest?.data?.response
+    const loading = latest?.loading
+    const error = latest?.error
 
     return (
         <div className="flex flex-col gap-2 mb-4">

@@ -1,30 +1,31 @@
 import type { ApiError } from '@fencyai/js'
-import { useChatCompletions, useWebsites } from '@fencyai/react'
+import { useStreamingChatCompletions, useWebsites } from '@fencyai/react'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
 import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
 export default function Example() {
-    const website = useWebsites()
-    const { createStreamingChatCompletion, latest } = useChatCompletions()
+    const { createWebsite } = useWebsites()
+    const { createStreamingChatCompletion, latest } =
+        useStreamingChatCompletions()
     const [scrapingError, setScrapingError] = useState<ApiError | null>(null)
     const [isScraping, setIsScraping] = useState(false)
     const [url, setUrl] = useState('https://google.com')
 
     // Get the response and loading state from the latest chat completion
-    const loading = latest?.streaming?.loading
-    const error = latest?.streaming?.error
+    const loading = latest?.loading
+    const error = latest?.error
 
     const state = getState({
         isScraping,
         loading: loading ?? false,
-        response: latest?.streaming?.response ?? null,
+        response: latest?.response ?? null,
     })
 
     return (
         <div className="flex flex-col gap-2">
             <div className="h-96 overflow-y-auto">
-                {state === 'summarizing' && latest?.streaming?.response}
+                {state === 'summarizing' && latest?.response}
                 {state === 'waiting_for_url' && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
                         <span className="text-gray-500">
@@ -65,7 +66,7 @@ export default function Example() {
                     onClick={async () => {
                         setIsScraping(true)
 
-                        const response = await website.scrapeContent({
+                        const response = await createWebsite({
                             url: url,
                         })
                         setIsScraping(false)

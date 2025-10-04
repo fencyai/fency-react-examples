@@ -26,4 +26,14 @@ export const examples = [
         description: 'Summarizing the content of a file',
         href: routes.examples.summarizingFileContent,
     },
+    {
+        title: 'File Form Filler',
+        description: 'Filling out a form from a file',
+        href: routes.examples.fileFormFiller,
+    },  
+    {
+        title: 'Website Form Filler',
+        description: 'Filling out a form from a website',
+        href: routes.examples.websiteFormFiller,
+    },
 ]

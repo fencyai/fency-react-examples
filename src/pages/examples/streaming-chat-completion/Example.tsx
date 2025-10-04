@@ -1,19 +1,20 @@
 import { Response } from '@/components/response'
-import { useChatCompletions } from '@fencyai/react'
+import { useStreamingChatCompletions } from '@fencyai/react'
 import { Alert, Button, Textarea } from '@mantine/core'
 import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
 export default function Example() {
-    const { createStreamingChatCompletion, latest } = useChatCompletions()
+    const { createStreamingChatCompletion, latest } =
+        useStreamingChatCompletions()
     const [prompt, setPrompt] = useState(
         'Show me a table of 5 famous actors and their most popular movies.'
     )
 
     // Get the response and loading state from the latest chat completion
-    const response = latest?.streaming?.response
-    const loading = latest?.streaming?.loading
-    const error = latest?.streaming?.error
+    const response = latest?.response
+    const loading = latest?.loading
+    const error = latest?.error
 
     return (
         <div className="flex flex-col gap-2">

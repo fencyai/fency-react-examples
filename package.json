@@ -13,11 +13,12 @@
         "check-file-refs": "tsx scripts/check-file-refs.ts",
         "set-local-deps": "tsx scripts/set-local-deps.ts && npm install",
         "set-remote-deps": "tsx scripts/set-remote-deps.ts && npm install",
-        "compile": "tsc --noEmit"
+        "compile": "tsc -b --noEmit"
     },
     "dependencies": {
-        "@fencyai/js": "^0.1.46",
-        "@fencyai/react": "^0.1.46",
+        "@fencyai/js": "^0.1.49",
+        "@fencyai/react": "^0.1.49",
+        "@hookform/resolvers": "^5.2.2",
         "@mantine/code-highlight": "^8.2.8",
         "@mantine/core": "^8.2.8",
         "@mantine/hooks": "^8.2.8",
@@ -30,6 +31,7 @@
         "clsx": "^2.1.1",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
+        "react-hook-form": "^7.63.0",
         "react-router": "^7.6.3",
         "shiki": "^3.12.2",
         "streamdown": "^1.1.6",
