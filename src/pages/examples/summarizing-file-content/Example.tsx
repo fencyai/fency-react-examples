@@ -1,4 +1,4 @@
-import { Response } from '@/components/response'
+import { Response } from '@/components/ai-elements/response'
 import type { FencyFile } from '@fencyai/js'
 import { useFiles, useStreamingChatCompletions } from '@fencyai/react'
 import { Loader } from '@mantine/core'

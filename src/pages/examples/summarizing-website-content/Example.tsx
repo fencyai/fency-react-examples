@@ -1,4 +1,4 @@
-import { Response } from '@/components/response'
+import { Response } from '@/components/ai-elements/response'
 import { useStreamingChatCompletions, useWebsites } from '@fencyai/react'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
 import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
