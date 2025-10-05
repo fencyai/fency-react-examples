@@ -11,8 +11,8 @@
         "preview": "vite preview",
         "ci": "npm run lint && npm run build",
         "check-file-refs": "tsx scripts/check-file-refs.ts",
-        "set-local-deps": "tsx scripts/set-local-deps.ts && npm install",
-        "set-remote-deps": "tsx scripts/set-remote-deps.ts && npm install",
+        "set-local-deps": "tsx scripts/set-local-deps.ts && npm link @fencyai/js @fencyai/react && npm install",
+        "set-remote-deps": "tsx scripts/set-remote-deps.ts && npm unlink @fencyai/js @fencyai/react && npm install",
         "compile": "tsc -b --noEmit"
     },
     "dependencies": {
@@ -35,7 +35,9 @@
         "streamdown": "^1.1.6",
         "tailwind-merge": "^3.3.1",
         "tailwindcss": "^4.1.11",
-        "zod": "^4.0.5"
+        "zod": "^4.0.5",
+        "@fencyai/js": "^0.1.53",
+        "@fencyai/react": "^0.1.53"
     },
     "devDependencies": {
         "@eslint/js": "^9.30.1",

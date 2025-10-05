@@ -30,12 +30,20 @@ const raw = readFileSync(file, 'utf8')
 const latestJs = getLatestVersion('@fencyai/js')
 const latestReact = getLatestVersion('@fencyai/react')
 
-const replaced = raw
-    .replace(/"@fencyai\/js"\s*:\s*"[^"]*"/g, `"@fencyai/js": "${latestJs}"`)
-    .replace(
-        /"@fencyai\/react"\s*:\s*"[^"]*"/g,
-        `"@fencyai/react": "${latestReact}"`
-    )
+// Parse the package.json to properly handle adding missing dependencies
+const pkg = JSON.parse(raw)
+
+// Ensure dependencies object exists
+if (!pkg.dependencies) {
+    pkg.dependencies = {}
+}
+
+// Add or update the fency packages
+pkg.dependencies['@fencyai/js'] = latestJs
+pkg.dependencies['@fencyai/react'] = latestReact
+
+// Convert back to JSON with proper formatting
+const replaced = JSON.stringify(pkg, null, 4) + '\n'
 
 // Validate JSON after replacement (throws if broken)
 try {
@@ -54,6 +62,6 @@ if (replaced !== raw) {
     )
 } else {
     console.log(
-        `No changes made to ${file}. (Keys may be missing or already set correctly.)`
+        `No changes made to ${file}. (Packages may already be set correctly.)`
     )
 }
