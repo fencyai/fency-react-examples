@@ -26,9 +26,14 @@ export default function Example() {
                 await chatCompletions.createStructuredChatCompletion({
                     responseFormat: formSchema,
                     gemini: {
-                        content:
-                            'Fill out the following form based on this content: ' +
-                            event.textContent,
+                        messages: [
+                            {
+                                role: 'user',
+                                content:
+                                    'Fill out the following form based on this content: ' +
+                                    event.textContent,
+                            },
+                        ],
                         model: 'gemini-2.5-flash-lite-preview-06-17',
                     },
                 })

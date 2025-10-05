@@ -11,9 +11,14 @@ export default function Example() {
         async onTextContentReady(event) {
             await createStreamingChatCompletion({
                 gemini: {
-                    content:
-                        'Give a short summary of the following website: ' +
-                        event.textContent,
+                    messages: [
+                        {
+                            role: 'user',
+                            content:
+                                'Give a short summary of the following website: ' +
+                                event.textContent,
+                        },
+                    ],
                     model: 'gemini-2.5-flash-lite-preview-06-17',
                 },
             })
