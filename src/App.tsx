@@ -9,6 +9,7 @@ import SummarizingWebsiteContentPage from './pages/examples/summarizing-website-
 import Home from './pages/Home'
 import { routes } from './routes'
 import WebsiteFormFillerPage from './pages/examples/website-form-filler'
+import ChatGptClonePage from './pages/examples/chat-gpt-clone'
 
 function App() {
     return (
@@ -42,6 +43,10 @@ function App() {
                 <Route
                     path={routes.examples.websiteFormFiller}
                     element={<WebsiteFormFillerPage />}
+                />
+                <Route
+                    path={routes.examples.chatGptClone}
+                    element={<ChatGptClonePage />}
                 />
                 <Route path={'*'} element={<Navigate to="/" replace />} />
                 <Route path={'*/*'} element={<Navigate to="/" replace />} />

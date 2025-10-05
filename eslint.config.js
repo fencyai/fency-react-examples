@@ -15,6 +15,7 @@ export default tseslint.config([
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
+    ignores: ['src/components/ai-elements/**', 'src/components/ui/**'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,

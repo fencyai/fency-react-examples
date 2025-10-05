@@ -36,4 +36,9 @@ export const examples = [
         description: 'Filling out a form from a website',
         href: routes.examples.websiteFormFiller,
     },
+    {
+        title: 'Chat GPT Clone',
+        description: 'A clone of Chat GPT',
+        href: routes.examples.chatGptClone,
+    },
 ]
