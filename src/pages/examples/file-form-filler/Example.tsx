@@ -1,7 +1,7 @@
 import { useFiles, useStructuredChatCompletions } from '@fencyai/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
-import { IconArrowUp, IconCheck } from '@tabler/icons-react'
+import { IconArrowDown, IconCheck } from '@tabler/icons-react'
 import AwsS3 from '@uppy/aws-s3'
 import Uppy from '@uppy/core'
 import '@uppy/core/css/style.min.css'
@@ -12,15 +12,15 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const formSchema = z.object({
-    fullName: z.string(),
+    companyName: z.string(),
     email: z.string(),
     address: z.string(),
 })
 
 const suggestionsSchema = z.object({
-    fullNames: z.array(z.string()),
+    companyNames: z.array(z.string()),
     emails: z.array(z.string()),
-    addresses: z.array(z.string()),
+    fullAddresses: z.array(z.string()),
 })
 
 type ExampleState =
@@ -126,20 +126,22 @@ export default function Example() {
     const statusMeta = getStatusMeta(state)
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2">
             <form
                 onSubmit={form.handleSubmit(() => {
                     setFormSubmitted(true)
                 })}
             >
                 <TextInput
-                    label="Full Name"
-                    {...form.register('fullName')}
-                    error={form.formState.errors.fullName?.message}
+                    label="Company Name"
+                    {...form.register('companyName')}
+                    error={form.formState.errors.companyName?.message}
                 />
                 <Suggestions
-                    suggestions={suggestions?.fullNames || []}
-                    onClick={(fullName) => form.setValue('fullName', fullName)}
+                    suggestions={suggestions?.companyNames || []}
+                    onClick={(companyName) =>
+                        form.setValue('companyName', companyName)
+                    }
                 />
                 <TextInput
                     label="Email"
@@ -157,19 +159,14 @@ export default function Example() {
                 />
 
                 <Suggestions
-                    suggestions={suggestions?.addresses || []}
+                    suggestions={suggestions?.fullAddresses || []}
                     onClick={(address) => form.setValue('address', address)}
                 />
-                <div className="flex justify-end pt-2">
-                    <Button
-                        type="submit"
-                        loading={
-                            state !== 'waiting_for_file' &&
-                            state !== 'suggestions_received'
-                        }
-                    >
-                        {statusMeta.text}
-                    </Button>
+                <div className="min-h-36 overflow-y-auto bg-gray-100 p-4 rounded-md mb-2 flex flex-col justify-center items-center mt-2">
+                    <div className="flex flex-col justify-center items-center w-full h-full">
+                        <span className="text-gray-500">{statusMeta.text}</span>
+                        {statusMeta.icon}
+                    </div>
                 </div>
             </form>
             {formSubmitted && (
@@ -182,7 +179,7 @@ export default function Example() {
                     Form submitted successfully.
                 </Alert>
             )}
-            <Dashboard uppy={uppy} />
+            <Dashboard uppy={uppy} width={'100%'} />
         </div>
     )
 }
@@ -237,7 +234,7 @@ const getStatusMeta = (
         case 'waiting_for_file':
             return {
                 text: 'Waiting for your file!',
-                icon: <IconArrowUp className="text-gray-400" />,
+                icon: <IconArrowDown className="text-gray-400" />,
             }
         case 'getting_suggestions':
             return {

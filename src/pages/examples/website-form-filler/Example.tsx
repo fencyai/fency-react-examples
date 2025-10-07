@@ -1,6 +1,6 @@
 import { useStructuredChatCompletions, useWebsites } from '@fencyai/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Alert, Button, TextInput } from '@mantine/core'
+import { Alert, Button, Loader, TextInput } from '@mantine/core'
 import { IconCheck } from '@tabler/icons-react'
 import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
@@ -8,20 +8,33 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const formSchema = z.object({
-    companyName: z.string(),
-    compayOrganizationNumber: z.string(),
-    companyAddress: z.string(),
-})
-
 const linkSchema = z.object({
     link: z.string().min(1).url(),
 })
 
+const formSchema = z.object({
+    companyName: z.string(),
+    companyOrganizationNumber: z.string(),
+    companyFullAddress: z.string(),
+})
+
+type ExampleState =
+    | 'waiting_for_url'
+    | 'getting_website_content'
+    | 'getting_suggestions'
+    | 'suggestions_received'
+    | 'filling_form_error'
+
 export default function Example() {
+    const [suggestions, setSuggestions] = useState<z.infer<
+        typeof formSchema
+    > | null>(null)
+    const [formsState, setFormsState] =
+        useState<ExampleState>('waiting_for_url')
     const { createWebsite } = useWebsites({
         async onTextContentReady(event) {
-            setFormsState('getting_form_data')
+            setFormsState('getting_suggestions')
+            console.log(event.textContent)
             const companyFormResponse =
                 await chatCompletions.createStructuredChatCompletion({
                     responseFormat: formSchema,
@@ -30,7 +43,7 @@ export default function Example() {
                             {
                                 role: 'user',
                                 content:
-                                    'Fill out the following form based on this content: ' +
+                                    'Find suggestions for the following form based on this content. Make sure to include all the relevant datapoints you can find ' +
                                     event.textContent,
                             },
                         ],
@@ -38,10 +51,8 @@ export default function Example() {
                     },
                 })
             if (companyFormResponse.type === 'success') {
-                companyFormData.reset(
-                    companyFormResponse.data.structuredResponse
-                )
-                setFormsState('filling_form_success')
+                setSuggestions(companyFormResponse.data.structuredResponse)
+                setFormsState('suggestions_received')
             } else {
                 setFormsState('filling_form_error')
             }
@@ -49,32 +60,30 @@ export default function Example() {
     })
     const chatCompletions = useStructuredChatCompletions()
     const [formSubmitted, setFormSubmitted] = useState(false)
-    const [formsState, setFormsState] = useState<
-        | 'waiting_for_url'
-        | 'scraping'
-        | 'getting_form_data'
-        | 'filling_form_success'
-        | 'filling_form_error'
-    >('waiting_for_url')
+
     const companyFormData = useForm({
         resolver: zodResolver(formSchema),
     })
     const linkForm = useForm({
         resolver: zodResolver(linkSchema),
         defaultValues: {
-            link: 'https://www.proff.no/selskap/databutton-as/oslo/dataprogramvare-og-utvikling/IFC2LJ8009O',
+            link: 'https://www.allabolag.se/foretag/spotify-ab/stockholm/datacenters/2K2GXM5I5YDLG',
         },
     })
 
     const submitForm = async (values: z.infer<typeof linkSchema>) => {
-        setFormsState('scraping')
+        setFormsState('getting_website_content')
         await createWebsite({
             url: values.link,
         })
     }
 
+    const isLoading =
+        formsState !== 'waiting_for_url' &&
+        formsState !== 'suggestions_received'
+
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2">
             <form onSubmit={linkForm.handleSubmit(submitForm)}>
                 <TextInput
                     label="Link"
@@ -82,7 +91,15 @@ export default function Example() {
                     error={linkForm.formState.errors.link?.message}
                 />
                 <div className="flex justify-end pt-2">
-                    <Button type="submit">{formsState}</Button>
+                    <Button
+                        type="submit"
+                        leftSection={
+                            isLoading ? <Loader size="xs" /> : undefined
+                        }
+                        disabled={isLoading}
+                    >
+                        {getStateMeta(formsState).title}
+                    </Button>
                 </div>
             </form>
             <form
@@ -97,19 +114,56 @@ export default function Example() {
                         companyFormData.formState.errors.companyName?.message
                     }
                 />
-                <TextInput
-                    label="Company Organization Number"
-                    {...companyFormData.register('compayOrganizationNumber')}
-                    error={
-                        companyFormData.formState.errors
-                            .compayOrganizationNumber?.message
+                <Suggestions
+                    suggestions={
+                        suggestions?.companyName
+                            ? [suggestions.companyName]
+                            : []
+                    }
+                    onClick={(companyName) =>
+                        companyFormData.setValue('companyName', companyName)
                     }
                 />
                 <TextInput
-                    label="Company Address"
-                    {...companyFormData.register('companyAddress')}
+                    label="Company Organization Number"
+                    {...companyFormData.register('companyOrganizationNumber')}
                     error={
-                        companyFormData.formState.errors.companyAddress?.message
+                        companyFormData.formState.errors
+                            .companyOrganizationNumber?.message
+                    }
+                />
+                <Suggestions
+                    suggestions={
+                        suggestions?.companyOrganizationNumber
+                            ? [suggestions.companyOrganizationNumber]
+                            : []
+                    }
+                    onClick={(companyOrganizationNumber) =>
+                        companyFormData.setValue(
+                            'companyOrganizationNumber',
+                            companyOrganizationNumber
+                        )
+                    }
+                />
+                <TextInput
+                    label="Company Full Address"
+                    {...companyFormData.register('companyFullAddress')}
+                    error={
+                        companyFormData.formState.errors.companyFullAddress
+                            ?.message
+                    }
+                />
+                <Suggestions
+                    suggestions={
+                        suggestions?.companyFullAddress
+                            ? [suggestions.companyFullAddress]
+                            : []
+                    }
+                    onClick={(companyFullAddress) =>
+                        companyFormData.setValue(
+                            'companyFullAddress',
+                            companyFullAddress
+                        )
                     }
                 />
             </form>
@@ -125,4 +179,73 @@ export default function Example() {
             )}
         </div>
     )
+}
+
+function Suggestions({
+    suggestions,
+    onClick,
+}: {
+    suggestions: string[]
+    onClick: (suggestion: string) => void
+}) {
+    return (
+        <div className="flex gap-1 mt-2">
+            {suggestions.map((suggestion) => (
+                <Suggestion
+                    key={suggestion}
+                    value={suggestion}
+                    onClick={() => onClick(suggestion)}
+                />
+            ))}
+        </div>
+    )
+}
+
+function Suggestion({
+    value,
+    onClick,
+}: {
+    value: string
+    onClick: () => void
+}) {
+    return (
+        <Button
+            color="grape"
+            size="xs"
+            radius={'lg'}
+            className="h-2"
+            onClick={onClick}
+        >
+            {value}
+        </Button>
+    )
+}
+
+const getStateMeta = (
+    state: ExampleState
+): {
+    title: string
+} => {
+    switch (state) {
+        case 'waiting_for_url':
+            return {
+                title: 'Get suggestions',
+            }
+        case 'getting_website_content':
+            return {
+                title: 'Getting website content...',
+            }
+        case 'getting_suggestions':
+            return {
+                title: 'Getting suggestions...',
+            }
+        case 'suggestions_received':
+            return {
+                title: 'Suggestions received!',
+            }
+        case 'filling_form_error':
+            return {
+                title: 'Error filling form!',
+            }
+    }
 }

@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react'
 
 interface Props extends PropsWithChildren {
     title: string
-    description?: string
+    description?: React.ReactNode
 }
 
 export default function ExampleLayout({ title, description, children }: Props) {
