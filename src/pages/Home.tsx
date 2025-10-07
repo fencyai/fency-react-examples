@@ -19,12 +19,13 @@ export default function Home() {
                     </Text>
                 </div>
                 <div>
-                    <Title order={5} mb="sm">
+                    <Title order={5} mb="xs">
                         Understand the basics
                     </Title>
-                    We recommend that you at least read up on the basics of
-                    Fency AI before you start in our docs.
-                    <br />
+                    <Text size="sm" c="dimmed">
+                        We recommend that you at least read up on the basics of
+                        Fency AI before you start in our docs.
+                    </Text>
                     <Button
                         component={Link}
                         size="xs"
