@@ -1,14 +1,34 @@
 import { Response } from '@/components/ai-elements/response'
 import { useStreamingChatCompletions, useWebsites } from '@fencyai/react'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
-import { IconAlertCircle, IconArrowDown } from '@tabler/icons-react'
+import { IconAlertCircle, IconArrowDown, IconCheck } from '@tabler/icons-react'
 import { useState } from 'react'
 
+type ExampleState =
+    | 'waiting_for_url'
+    | 'getting_html_content'
+    | 'getting_text_content'
+    | 'summarizing'
+    | 'summarizing_completed'
+
 export default function Example() {
+    const [url, setUrl] = useState('https://google.com')
+    const [state, setState] = useState<ExampleState>('waiting_for_url')
     const { createStreamingChatCompletion, latest } =
-        useStreamingChatCompletions()
+        useStreamingChatCompletions({
+            onChatCompletionStreamCompleted() {
+                console.log('onChatCompletionStreamCompleted')
+                setState('summarizing_completed')
+            },
+        })
     const { createWebsite } = useWebsites({
+        async onHtmlContentReady() {
+            console.log('onHtmlContentReady')
+            setState('getting_text_content')
+        },
         async onTextContentReady(event) {
+            console.log('onTextContentReady')
+            setState('summarizing')
             await createStreamingChatCompletion({
                 gemini: {
                     messages: [
@@ -24,45 +44,17 @@ export default function Example() {
             })
         },
     })
-    const [isScraping, setIsScraping] = useState(false)
-    const [url, setUrl] = useState('https://google.com')
 
-    // Get the response and loading state from the latest chat completion
-    const loading = latest?.loading
-    const error = latest?.error
-
-    const state = getState({
-        isScraping,
-        loading: loading ?? false,
-        response: latest?.response ?? null,
-    })
+    const stateMeta = getStateMeta(state)
 
     return (
         <div className="flex flex-col gap-2">
             <div className="h-96 overflow-y-auto">
                 {latest?.response && <Response>{latest.response}</Response>}
-                {state === 'waiting_for_url' && (
+                {latest?.response == null && (
                     <div className="flex flex-col justify-center items-center w-full h-full">
-                        <span className="text-gray-500">
-                            Waiting for your url!
-                        </span>
-                        <IconArrowDown className="text-gray-400" />
-                    </div>
-                )}
-                {state === 'scraping' && (
-                    <div className="flex flex-col justify-center items-center w-full h-full">
-                        <span className="text-gray-500">
-                            Scraping website...
-                        </span>
-                        <Loader size="xs" />
-                    </div>
-                )}
-                {state === 'loading' && (
-                    <div className="flex flex-col justify-center items-center w-full h-full">
-                        <span className="text-gray-500">
-                            Summarizing website content...
-                        </span>
-                        <Loader size="xs" />
+                        <span className="text-gray-500">{stateMeta.title}</span>
+                        {stateMeta.icon}
                     </div>
                 )}
             </div>
@@ -75,11 +67,9 @@ export default function Example() {
             />
             <div className="flex justify-end">
                 <Button
-                    disabled={
-                        state !== 'waiting_for_url' && state !== 'summarizing'
-                    }
+                    loading={state !== 'waiting_for_url' && state !== 'summarizing_completed'}
                     onClick={async () => {
-                        setIsScraping(true)
+                        setState('getting_html_content')
                         await createWebsite({
                             url: url,
                         })
@@ -88,7 +78,7 @@ export default function Example() {
                     Summarize content
                 </Button>
             </div>
-            {error && (
+            {latest?.error && (
                 <Alert
                     variant="light"
                     color="red"
@@ -97,26 +87,44 @@ export default function Example() {
                     icon={<IconAlertCircle />}
                     className="whitespace-pre-wrap"
                 >
-                    {error.message}
+                    {latest.error.message}
                 </Alert>
             )}
         </div>
     )
 }
 
-const getState = (values: {
-    isScraping: boolean
-    loading: boolean
-    response: string | null
-}): 'scraping' | 'loading' | 'summarizing' | 'waiting_for_url' => {
-    if (values.response && values.response.length > 0) {
-        return 'summarizing'
+const getStateMeta = (
+    state: ExampleState
+): {
+    title: string
+    icon: React.ReactNode
+} => {
+    switch (state) {
+        case 'waiting_for_url':
+            return {
+                title: 'Waiting for your url!',
+                icon: <IconArrowDown className="text-gray-400" />,
+            }
+        case 'getting_html_content':
+            return {
+                title: 'Getting website content...',
+                icon: <Loader size="xs" />,
+            }
+        case 'getting_text_content':
+            return {
+                title: 'Getting website content...',
+                icon: <Loader size="xs" />,
+            }
+        case 'summarizing':
+            return {
+                title: 'Summarizing website content...',
+                icon: <Loader size="xs" />,
+            }
+        case 'summarizing_completed':
+            return {
+                title: 'Summarizing website content completed!',
+                icon: <IconCheck className="text-gray-400" />,
+            }
     }
-    if (values.isScraping) {
-        return 'scraping'
-    }
-    if (values.loading) {
-        return 'loading'
-    }
-    return 'waiting_for_url'
 }

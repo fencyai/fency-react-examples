@@ -1,9 +1,4 @@
-import type { FencyFile } from '@fencyai/js'
-import {
-    useFiles,
-    useStructuredChatCompletions,
-    type UseStructuredChatCompletions,
-} from '@fencyai/react'
+import { useFiles, useStructuredChatCompletions } from '@fencyai/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Alert, Button, Loader, TextInput } from '@mantine/core'
 import { IconArrowUp, IconCheck } from '@tabler/icons-react'
@@ -17,28 +12,48 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const formSchema = z.object({
-    name: z.string(),
+    fullName: z.string(),
     email: z.string(),
-    phone: z.string(),
+    address: z.string(),
 })
+
+const suggestionsSchema = z.object({
+    fullNames: z.array(z.string()),
+    emails: z.array(z.string()),
+    addresses: z.array(z.string()),
+})
+
+type ExampleState =
+    | 'waiting_for_file'
+    | 'getting_file_text_content'
+    | 'getting_suggestions'
+    | 'suggestions_received'
 
 export default function Example() {
     const chatCompletions = useStructuredChatCompletions()
     const [formSubmitted, setFormSubmitted] = useState(false)
+    const [state, setState] = useState<ExampleState>('waiting_for_file')
+    const [suggestions, setSuggestions] = useState<z.infer<
+        typeof suggestionsSchema
+    > | null>(null)
     const form = useForm({
         resolver: zodResolver(formSchema),
     })
-    const { createFile, files } = useFiles({
+    const { createFile } = useFiles({
+        async onUploadCompleted() {
+            setState('getting_file_text_content')
+        },
         async onTextContentReady(event) {
+            setState('getting_suggestions')
             const response =
                 await chatCompletions.createStructuredChatCompletion({
-                    responseFormat: formSchema,
+                    responseFormat: suggestionsSchema,
                     openai: {
                         messages: [
                             {
                                 role: 'user',
                                 content:
-                                    'Fill out the following form based on this content: ' +
+                                    'Find suggestions for the following form based on this content. Make sure to include all the relevant datapoints you can find ' +
                                     event.textContent,
                             },
                         ],
@@ -47,7 +62,8 @@ export default function Example() {
                 })
 
             if (response.type === 'success') {
-                form.reset(response.data.structuredResponse)
+                setSuggestions(response.data.structuredResponse)
+                setState('suggestions_received')
             }
         },
     })
@@ -107,7 +123,7 @@ export default function Example() {
         return u
     }, [])
 
-    const statusMeta = getStatusMeta(files, chatCompletions)
+    const statusMeta = getStatusMeta(state)
 
     return (
         <div className="flex flex-col gap-2">
@@ -117,22 +133,43 @@ export default function Example() {
                 })}
             >
                 <TextInput
-                    label="Name"
-                    {...form.register('name')}
-                    error={form.formState.errors.name?.message}
+                    label="Full Name"
+                    {...form.register('fullName')}
+                    error={form.formState.errors.fullName?.message}
+                />
+                <Suggestions
+                    suggestions={suggestions?.fullNames || []}
+                    onClick={(fullName) => form.setValue('fullName', fullName)}
                 />
                 <TextInput
                     label="Email"
                     {...form.register('email')}
                     error={form.formState.errors.email?.message}
                 />
+                <Suggestions
+                    suggestions={suggestions?.emails || []}
+                    onClick={(email) => form.setValue('email', email)}
+                />
                 <TextInput
-                    label="Phone"
-                    {...form.register('phone')}
-                    error={form.formState.errors.phone?.message}
+                    label="Address"
+                    {...form.register('address')}
+                    error={form.formState.errors.address?.message}
+                />
+
+                <Suggestions
+                    suggestions={suggestions?.addresses || []}
+                    onClick={(address) => form.setValue('address', address)}
                 />
                 <div className="flex justify-end pt-2">
-                    <Button type="submit">{statusMeta.status}</Button>
+                    <Button
+                        type="submit"
+                        loading={
+                            state !== 'waiting_for_file' &&
+                            state !== 'suggestions_received'
+                        }
+                    >
+                        {statusMeta.text}
+                    </Button>
                 </div>
             </form>
             {formSubmitted && (
@@ -150,39 +187,72 @@ export default function Example() {
     )
 }
 
+function Suggestions({
+    suggestions,
+    onClick,
+}: {
+    suggestions: string[]
+    onClick: (suggestion: string) => void
+}) {
+    return (
+        <div className="flex gap-1 mt-2">
+            {suggestions.map((suggestion) => (
+                <Suggestion
+                    key={suggestion}
+                    value={suggestion}
+                    onClick={() => onClick(suggestion)}
+                />
+            ))}
+        </div>
+    )
+}
+
+function Suggestion({
+    value,
+    onClick,
+}: {
+    value: string
+    onClick: () => void
+}) {
+    return (
+        <Button
+            color="grape"
+            size="xs"
+            radius={'lg'}
+            className="h-2"
+            onClick={onClick}
+        >
+            {value}
+        </Button>
+    )
+}
+
 const getStatusMeta = (
-    files: FencyFile[],
-    chatCompletions: UseStructuredChatCompletions
+    state: ExampleState
 ): {
-    status: string
+    text: string
     icon: React.ReactNode
 } => {
-    let statusMeta: {
-        status: string
-        icon: React.ReactNode
-    } = {
-        status: 'Waiting for your file!',
-        icon: <IconArrowUp className="text-gray-400" />,
-    }
-    if (files.length > 0) {
-        if (files[0].content == null) {
-            statusMeta = {
-                status: 'Uploading your file...',
+    switch (state) {
+        case 'waiting_for_file':
+            return {
+                text: 'Waiting for your file!',
+                icon: <IconArrowUp className="text-gray-400" />,
+            }
+        case 'getting_suggestions':
+            return {
+                text: 'Getting suggestions...',
                 icon: <Loader color="blue" size="xs" />,
             }
-        }
-        if (files[0].content != null) {
-            statusMeta = {
-                status: 'Getting the text content of your file...',
+        case 'suggestions_received':
+            return {
+                text: 'Suggestions received!',
+                icon: <IconCheck className="text-gray-400" />,
+            }
+        case 'getting_file_text_content':
+            return {
+                text: 'Getting file text content...',
                 icon: <Loader color="blue" size="xs" />,
             }
-        }
     }
-    if (chatCompletions.latest?.data?.response) {
-        statusMeta = {
-            status: 'Filling out the form...',
-            icon: <Loader color="blue" size="xs" />,
-        }
-    }
-    return statusMeta
 }

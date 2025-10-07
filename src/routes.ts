@@ -1,4 +1,5 @@
 export const routes = {
+    runningLocally: '/running-locally',
     examples: {
         basicChatCompletion: '/examples/basic-chat-completion',
         structuredChatCompletion: '/examples/structured-chat-completion',

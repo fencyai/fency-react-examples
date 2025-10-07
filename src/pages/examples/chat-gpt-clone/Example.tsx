@@ -74,7 +74,7 @@ export default function Example() {
     ]
 
     return (
-        <div>
+        <div className='mb-4'>
             <Conversation
                 className="relative w-full"
                 style={{ height: '500px' }}

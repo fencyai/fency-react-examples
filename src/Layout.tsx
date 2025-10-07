@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { Link, Outlet, useLocation } from 'react-router'
 import reactExamplesLogo from './assets/react-examples.svg'
 import { examples } from './examples'
+import { routes } from './routes'
 
 export default function Layout() {
     const [opened, { toggle }] = useDisclosure()
@@ -38,11 +39,18 @@ export default function Layout() {
             </AppShell.Header>
 
             <AppShell.Navbar>
-                <div className="px-2 py-2">
-                    <Title order={6} className="px-3 text-gray-400">
-                        EXAMPLES
-                    </Title>
+                <div className="px-2 pb-2 py-3">
+                    <SidebarElement
+                        key={'running-this-project-locally'}
+                        title={'Running locally'}
+                        description={'Play around with the source code locally'}
+                        href={routes.runningLocally}
+                        selected={location.pathname === routes.runningLocally}
+                    />
                 </div>
+                <Title order={6} className="px-3 pb-2 text-gray-400">
+                    EXAMPLES
+                </Title>
                 <div className="px-4">
                     {examples.map((example) => (
                         <SidebarElement
@@ -78,7 +86,7 @@ const SidebarElement = ({
 }: SidebarElementProps) => {
     return (
         <Link
-            className={clsx('py-2 block', {
+            className={clsx('py-2 block px-3', {
                 'bg-blue-100 border-l-1 border-blue-500 rounded-tr-sm rounded-br-sm':
                     selected,
                 'border-l-1 border-gray-200': !selected,
@@ -86,7 +94,7 @@ const SidebarElement = ({
             to={href}
         >
             <span
-                className={clsx('px-3 text-sm', {
+                className={clsx('text-sm', {
                     'text-blue-500': selected,
                     'text-gray-500': !selected,
                 })}
@@ -95,7 +103,7 @@ const SidebarElement = ({
             </span>
             <br />
             <span
-                className={clsx('px-3 text-xs', {
+                className={clsx('text-xs', {
                     'text-blue-500': selected,
                     'text-gray-400': !selected,
                 })}

@@ -10,12 +10,17 @@ import Home from './pages/Home'
 import { routes } from './routes'
 import WebsiteFormFillerPage from './pages/examples/website-form-filler'
 import ChatGptClonePage from './pages/examples/chat-gpt-clone'
+import RunningLocallyPage from './pages/running-locally'
 
 function App() {
     return (
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
+                <Route
+                    path={routes.runningLocally}
+                    element={<RunningLocallyPage />}
+                />
                 <Route
                     path={routes.examples.basicChatCompletion}
                     element={<BasicChatCompletionPage />}
