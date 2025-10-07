@@ -77,7 +77,7 @@ export default function Example() {
         <div className='mb-4'>
             <Conversation
                 className="relative w-full"
-                style={{ height: '500px' }}
+                style={{ height: '300px' }}
             >
                 <ConversationContent>
                     {messages.length === 0 ? (
