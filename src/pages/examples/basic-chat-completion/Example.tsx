@@ -53,7 +53,7 @@ export default function Example() {
                                         content: prompt,
                                     },
                                 ],
-                                model: 'gpt-4o',
+                                model: "gpt-4.1-nano",
                             },
                         })
                     }}

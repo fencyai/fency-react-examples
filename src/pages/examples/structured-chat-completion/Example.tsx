@@ -66,7 +66,7 @@ export default function Example() {
                                             'Show me 3 different actors where each actor is born in a different year.',
                                     },
                                 ],
-                                model: 'gpt-4o',
+                                model: "gpt-4.1-nano",
                             },
                             responseFormat: responseSchema,
                         })
