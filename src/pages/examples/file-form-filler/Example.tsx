@@ -1,7 +1,6 @@
 import { useFiles, useStructuredChatCompletions } from '@fencyai/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Alert, Button, Loader, TextInput } from '@mantine/core'
-import { IconArrowDown, IconCheck } from '@tabler/icons-react'
+import { Alert, Button, TextInput } from '@mantine/core'
 import AwsS3 from '@uppy/aws-s3'
 import Uppy from '@uppy/core'
 import '@uppy/core/css/style.min.css'
@@ -165,7 +164,6 @@ export default function Example() {
                 <div className="min-h-36 overflow-y-auto bg-gray-100 p-4 rounded-md mb-2 flex flex-col justify-center items-center mt-2">
                     <div className="flex flex-col justify-center items-center w-full h-full">
                         <span className="text-gray-500">{statusMeta.text}</span>
-                        {statusMeta.icon}
                     </div>
                 </div>
             </form>
@@ -174,7 +172,6 @@ export default function Example() {
                     variant="light"
                     color="teal"
                     title="Form submitted successfully"
-                    icon={<IconCheck />}
                 >
                     Form submitted successfully.
                 </Alert>
@@ -228,28 +225,23 @@ const getStatusMeta = (
     state: ExampleState
 ): {
     text: string
-    icon: React.ReactNode
 } => {
     switch (state) {
         case 'waiting_for_file':
             return {
                 text: 'Waiting for your file!',
-                icon: <IconArrowDown className="text-gray-400" />,
             }
         case 'getting_suggestions':
             return {
                 text: 'Getting suggestions...',
-                icon: <Loader color="blue" size="xs" />,
             }
         case 'suggestions_received':
             return {
                 text: 'Suggestions received!',
-                icon: <IconCheck className="text-gray-400" />,
             }
         case 'getting_file_text_content':
             return {
                 text: 'Getting file text content...',
-                icon: <Loader color="blue" size="xs" />,
             }
     }
 }
