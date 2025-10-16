@@ -8,6 +8,6 @@ export const routes = {
         summarizingFileContent: '/examples/summarizing-file-content',
         fileFormFiller: '/examples/file-form-filler',
         websiteFormFiller: '/examples/website-form-filler',
-        chatGptClone: '/examples/chat-gpt-clone',
+        chatGptClone: '/examples/chatgpt-clone',
     },
 }

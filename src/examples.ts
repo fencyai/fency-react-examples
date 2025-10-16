@@ -22,6 +22,11 @@ export const examples = [
         href: routes.examples.summarizingWebsiteContent,
     },
     {
+        title: 'Website Form Filler',
+        description: 'Filling out a form from a website',
+        href: routes.examples.websiteFormFiller,
+    },
+    {
         title: 'Summarizing File Content',
         description: 'Summarizing the content of a file',
         href: routes.examples.summarizingFileContent,
@@ -30,11 +35,6 @@ export const examples = [
         title: 'File Form Filler',
         description: 'Filling out a form from a file',
         href: routes.examples.fileFormFiller,
-    },  
-    {
-        title: 'Website Form Filler',
-        description: 'Filling out a form from a website',
-        href: routes.examples.websiteFormFiller,
     },
     {
         title: 'Chat GPT Clone',
