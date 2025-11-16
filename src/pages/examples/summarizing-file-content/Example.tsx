@@ -7,7 +7,7 @@ import AwsS3 from '@uppy/aws-s3'
 import Uppy from '@uppy/core'
 import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
-import { Dashboard } from '@uppy/react'
+import Dashboard from '@uppy/react/dashboard'
 import type { UseStreamingChatCompletions } from 'node_modules/@fencyai/react/lib/types/UseStreamingChatCompletions'
 import { useMemo } from 'react'
 
