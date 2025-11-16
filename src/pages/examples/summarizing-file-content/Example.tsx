@@ -1,6 +1,6 @@
 import { Response } from '@/components/ai-elements/response'
 import type { FencyFile } from '@fencyai/js'
-import { useFiles, useStreamingChatCompletions } from '@fencyai/react'
+import { useCreateFiles, useStreamingChatCompletions } from '@fencyai/react'
 import { Loader } from '@mantine/core'
 import { IconArrowDown } from '@tabler/icons-react'
 import AwsS3 from '@uppy/aws-s3'
@@ -13,7 +13,7 @@ import { useMemo } from 'react'
 
 export default function Example() {
     const chatCompletions = useStreamingChatCompletions()
-    const { createFile, files } = useFiles({
+    const { createFile, files } = useCreateFiles({
         onTextContentReady(event) {
             chatCompletions.createStreamingChatCompletion({
                 openai: {
