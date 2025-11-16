@@ -84,7 +84,7 @@ export default function Example() {
         })
 
         return u
-    }, [])
+    }, [createFile])
 
     const statusMeta = getStatusMeta(files, chatCompletions)
 
