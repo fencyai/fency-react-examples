@@ -9,8 +9,8 @@
         },
         {
             "matchDepTypes": ["devDependencies"],
-            "matchPackagePatterns": ["lint", "prettier"],
-            "automerge": true
+            "automerge": true,
+            "matchPackageNames": ["/lint/", "/prettier/"]
         }
     ],
     "lockFileMaintenance": {
