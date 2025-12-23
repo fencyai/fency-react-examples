@@ -33,7 +33,7 @@
         "@uppy/core": "^5.0.2",
         "@uppy/dashboard": "^5.0.4",
         "@uppy/react": "^5.1.1",
-        "ai": "^5.0.60",
+        "ai": "^6.0.0",
         "axios": "^1.11.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
