@@ -9,6 +9,7 @@ self-contained folder that maps 1-to-1 to a guide in the
 |---|---|---|
 | Streaming chat completion | [`/streaming-chat-completion`](./app/streaming-chat-completion) | [Guide](https://fency.ai/docs/integration/streaming-chat-completion) |
 | Structured chat completion | [`/structured-chat-completion`](./app/structured-chat-completion) | [Guide](https://fency.ai/docs/integration/structured-chat-completion) |
+| Explore memories | [`/explore-memories`](./app/explore-memories) | [Guide](https://fency.ai/docs/integration/explore-memories) |
 
 ## Prerequisites
 

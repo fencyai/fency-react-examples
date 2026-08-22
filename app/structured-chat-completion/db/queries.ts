@@ -29,13 +29,8 @@ export async function getConversation(
   return row ?? null
 }
 
-export async function insertConversation(input: {
-  fencyConversationId: string
-}): Promise<StructuredConversation> {
-  const [row] = await db
-    .insert(structuredConversations)
-    .values({ fencyConversationId: input.fencyConversationId })
-    .returning()
+export async function insertConversation(): Promise<StructuredConversation> {
+  const [row] = await db.insert(structuredConversations).values({}).returning()
   return row
 }
 

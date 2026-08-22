@@ -13,6 +13,7 @@ export default defineConfig({
   schema: [
     './app/streaming-chat-completion/db/schema.ts',
     './app/structured-chat-completion/db/schema.ts',
+    './app/explore-memories/db/schema.ts',
   ],
   out: './drizzle',
   dialect: 'postgresql',

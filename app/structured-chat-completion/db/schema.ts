@@ -2,7 +2,6 @@ import { jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const structuredConversations = pgTable('structured_conversations', {
   id: uuid('id').defaultRandom().primaryKey(),
-  fencyConversationId: text('fency_conversation_id').notNull().unique(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

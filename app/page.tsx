@@ -15,6 +15,13 @@ const examples = [
       'Paste free text and extract a JSON record shaped by a Zod schema. Prior extractions are stored in Postgres.',
     guide: 'https://fency.ai/docs/integration/structured-chat-completion',
   },
+  {
+    href: '/explore-memories',
+    title: 'Explore memories',
+    description:
+      'Creates a Fency conversation and attaches each EXPLORE_MEMORIES task to it. Guard rails are omitted for now.',
+    guide: 'https://fency.ai/docs/integration/explore-memories',
+  },
 ]
 
 export default function HomePage() {

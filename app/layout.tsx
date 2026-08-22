@@ -33,6 +33,12 @@ export default function RootLayout({
             >
               Structured chat
             </Link>
+            <Link
+              href="/explore-memories"
+              className="text-(--muted) hover:text-(--foreground)"
+            >
+              Explore memories
+            </Link>
           </nav>
         </header>
         <main className="flex min-h-0 flex-1 flex-col">{children}</main>

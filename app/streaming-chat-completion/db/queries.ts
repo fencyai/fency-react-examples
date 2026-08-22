@@ -29,16 +29,12 @@ export async function getConversation(
   return row ?? null
 }
 
-export async function insertConversation(input: {
-  fencyConversationId: string
+export async function insertConversation(input?: {
   title?: string | null
 }): Promise<StreamingConversation> {
   const [row] = await db
     .insert(streamingConversations)
-    .values({
-      fencyConversationId: input.fencyConversationId,
-      title: input.title ?? null,
-    })
+    .values({ title: input?.title ?? null })
     .returning()
   return row
 }

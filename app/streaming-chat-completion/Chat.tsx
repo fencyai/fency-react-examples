@@ -95,13 +95,7 @@ export function Chat({
           fetchCreateAgentTaskClientToken: async () => {
             const res = await fetch(
               '/streaming-chat-completion/api/agent-task-session',
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  conversationId: current.fencyConversationId,
-                }),
-              },
+              { method: 'POST' },
             )
             if (!res.ok) {
               throw new Error('Failed to create agent task session')
@@ -189,7 +183,7 @@ export function Chat({
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-2">
         {messages.length === 0 && !liveStreamingTask ? (
           <p className="py-12 text-center text-sm text-(--muted)">
-            Send a message to create a Fency conversation and start streaming.
+            Send a message to start streaming. History is stored in Postgres.
           </p>
         ) : null}
 

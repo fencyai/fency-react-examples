@@ -5,7 +5,6 @@ import {
   insertConversation,
   listExtractions,
 } from '../../db/queries'
-import { fencyFetch } from '../../fency'
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
@@ -21,20 +20,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST() {
-  const response = await fencyFetch('/v1/conversations', {
-    method: 'POST',
-    body: JSON.stringify({
-      metadata: { example: 'structured-chat-completion' },
-    }),
-  })
-  const data = (await response.json()) as { id?: string; error?: unknown }
-
-  if (!response.ok || typeof data.id !== 'string') {
-    return NextResponse.json(data, { status: response.status })
-  }
-
-  const conversation = await insertConversation({
-    fencyConversationId: data.id,
-  })
+  const conversation = await insertConversation()
   return NextResponse.json({ conversation, extractions: [] }, { status: 201 })
 }

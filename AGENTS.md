@@ -11,6 +11,7 @@ folder. That is why the examples must not share code.
 |---|---|
 | `app/streaming-chat-completion/` | `/docs/integration/streaming-chat-completion` |
 | `app/structured-chat-completion/` | `/docs/integration/structured-chat-completion` |
+| `app/explore-memories/` | `/docs/integration/explore-memories` |
 
 The guides live in `customers/fency-docs-v2/content/docs/integration/` in the
 Fency workspace (published as the Integration section of the docs site).
@@ -27,7 +28,7 @@ These rules are the point of the repo. Do not "clean them up."
    between examples is intentional and required so a reader can stay inside one
    folder.
 4. **Each example owns its database schema.** Table names are prefixed with the
-   example slug (`streaming_...`, `structured_...`). Each example has its own
+   example slug (`streaming_...`, `structured_...`, `explore_...`). Each example has its own
    `db/client.ts` (its own `pg.Pool` + Drizzle instance) and `db/queries.ts`.
 5. **Relative imports only inside an example.** Do not add path aliases that
    reach into other examples.

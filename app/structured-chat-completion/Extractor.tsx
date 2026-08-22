@@ -74,13 +74,7 @@ export function Extractor({
           fetchCreateAgentTaskClientToken: async () => {
             const res = await fetch(
               '/structured-chat-completion/api/agent-task-session',
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  conversationId: current.fencyConversationId,
-                }),
-              },
+              { method: 'POST' },
             )
             if (!res.ok) {
               throw new Error('Failed to create agent task session')
