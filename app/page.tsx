@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-12">
       <h1 className="text-2xl font-semibold tracking-tight">
-        Fency integration examples
+        Fency React examples
       </h1>
       <p className="mt-2 max-w-2xl text-(--muted)">
         Each example is a self-contained folder that maps 1-to-1 to a guide.

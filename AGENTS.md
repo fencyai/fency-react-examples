@@ -1,11 +1,11 @@
-# Fency Integration Examples
+# Fency React Examples
 
 This repository is a single Next.js app that deploys to Vercel. Each example
 is a self-contained folder under `app/` and maps 1-to-1 to one integration
 guide in `fency-docs-v2`. Readers follow a guide while inspecting the matching
 folder. That is why the examples must not share code.
 
-## Example ? guide mapping
+## Example to guide mapping
 
 | Example folder | Guide |
 |---|---|
@@ -27,7 +27,7 @@ These rules are the point of the repo. Do not "clean them up."
    between examples is intentional and required so a reader can stay inside one
    folder.
 4. **Each example owns its database schema.** Table names are prefixed with the
-   example slug (`streaming_…`, `structured_…`). Each example has its own
+   example slug (`streaming_...`, `structured_...`). Each example has its own
    `db/client.ts` (its own `pg.Pool` + Drizzle instance) and `db/queries.ts`.
 5. **Relative imports only inside an example.** Do not add path aliases that
    reach into other examples.
@@ -48,7 +48,7 @@ stay that way:
 
 ## Generated, not authored
 
-- `drizzle/` — drizzle-kit writes migrations here because it needs a single
+- `drizzle/` - drizzle-kit writes migrations here because it needs a single
   output folder. Do not hand-edit these files. After changing an example
   schema, run `npm run db:generate`.
 

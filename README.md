@@ -1,4 +1,4 @@
-# Fency Integration Examples
+# Fency React Examples
 
 End-to-end Next.js examples for the [Fency](https://fency.ai) public API and
 published SDKs (`@fencyai/js`, `@fencyai/react`). Each example is a
@@ -14,8 +14,8 @@ self-contained folder that maps 1-to-1 to a guide in the
 
 - Node.js 20+
 - Docker (for local Postgres)
-- A [Fency](https://app.fency.ai) account with a publishable key (`pk_…`) and a
-  secret key (`sk_…`)
+- A [Fency](https://app.fency.ai) account with a publishable key (`pk_...`) and a
+  secret key (`sk_...`)
 - On the publishable key, allow origin `http://localhost:3000`
 
 ## Local setup

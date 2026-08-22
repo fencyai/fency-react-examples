@@ -3,7 +3,7 @@ import Link from 'next/link'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Fency Integration Examples',
+  title: 'Fency React Examples',
   description:
     'End-to-end Next.js examples for the Fency public API and published SDKs.',
 }
