@@ -41,10 +41,14 @@ Open [http://localhost:3000](http://localhost:3000). Sign up from the header,
 then open an example. The landing page is public; the three examples require
 sign-in.
 
-A keyless Clerk app cannot change sign-in factors until you claim it. After
-`npx -y clerk@latest auth login`, enable username + password and disable email
-with:
+In the [Clerk dashboard](https://dashboard.clerk.com), enable **Email**,
+**Password**, and **Google** as sign-in methods.
 
-```bash
-npx -y clerk@latest config patch --json '{"auth_username":{"enabled":true},"auth_password":{"enabled":true},"auth_email":{"enabled":false}}' --yes
-```
+Production at [react.fency.ai](https://react.fency.ai) uses the `fency.ai`
+Clerk instance. The Frontend API CNAMEs (`clerk`, `accounts`, `clkmail`,
+`clk._domainkey`, `clk2._domainkey`) live in `fency-infra`'s
+`DotAiDnsRecordsStack`. On Vercel production, set
+`CLERK_DISABLE_AUTO_PROXY=true` so the build loads clerk-js from
+`clerk.fency.ai` instead of `/__clerk`. Production Google OAuth credentials
+must be configured on the Clerk production instance; development shared
+credentials do not carry over.

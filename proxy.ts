@@ -6,11 +6,16 @@ const isProtectedRoute = createRouteMatcher([
   '/explore-memories(.*)',
 ])
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect()
-  }
-})
+export default clerkMiddleware(
+  async (auth, req) => {
+    if (isProtectedRoute(req)) {
+      await auth.protect()
+    }
+  },
+  {
+    authorizedParties: ['https://react.fency.ai', 'http://localhost:3000'],
+  },
+)
 
 export const config = {
   matcher: [
