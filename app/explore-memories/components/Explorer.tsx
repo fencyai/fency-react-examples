@@ -44,7 +44,7 @@ export function Explorer() {
       </AppShell.Navbar>
       <AppShell.Main h="100%">
         <ChatPane
-          key={`${isDraftNewChat}:${selectedConversationId ?? 'draft'}`}
+          selectedConversationId={selectedConversationId}
           isDraftNewChat={isDraftNewChat}
           isLoadingTurn={isLoadingTurn}
           latestTurn={latestTurn}

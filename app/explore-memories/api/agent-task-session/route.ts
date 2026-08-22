@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       taskType: 'EXPLORE_MEMORIES',
       conversationId: body.conversationId,
       metadata: { userId },
-      background: 'You help the user explore a catalog of 100 cars.',
+      background: 'You help the user explore a catalog of cars.',
       guardRails: buildExploreCarGuardRails(
         catalog.memoryTypeId,
         catalog.versionTag,

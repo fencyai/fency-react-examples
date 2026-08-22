@@ -25,7 +25,7 @@ export function SetupPanel({
         Set up Explore memories
       </Title>
       <Text size="sm">
-        This demo explores a catalog of 100 cars. Fency requires a metadata
+        This demo explores a catalog of cars. Fency requires a metadata
         memory type and guard rails before EXPLORE_MEMORIES can run. Click the
         button to create the DemoCar type, seed the cars in Postgres, and sync
         them to Fency.

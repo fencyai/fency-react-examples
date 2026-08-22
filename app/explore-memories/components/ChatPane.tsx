@@ -2,12 +2,13 @@
 
 import { Alert, Stack, Text } from '@mantine/core'
 import { AgentTaskProgress, useAgentTasks } from '@fencyai/react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { LatestTurn } from '../hooks/useConversation'
 import { ChatComposer } from './ChatComposer'
 import { UserQueryBubble } from './UserQueryBubble'
 
 export function ChatPane({
+  selectedConversationId,
   isDraftNewChat,
   isLoadingTurn,
   latestTurn,
@@ -17,6 +18,7 @@ export function ChatPane({
   onEnsureConversation,
   onFirstMessage,
 }: {
+  selectedConversationId: string | null
   isDraftNewChat: boolean
   isLoadingTurn: boolean
   latestTurn: LatestTurn | null
@@ -30,6 +32,15 @@ export function ChatPane({
   const [liveQuery, setLiveQuery] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { latest, createAgentTask } = useAgentTasks({})
+  const previousConversationId = useRef(selectedConversationId)
+
+  useEffect(() => {
+    const previousId = previousConversationId.current
+    previousConversationId.current = selectedConversationId
+    if (previousId !== null && previousId !== selectedConversationId) {
+      setLiveQuery(null)
+    }
+  }, [selectedConversationId])
 
   const inputDisabled =
     isSubmitting ||
