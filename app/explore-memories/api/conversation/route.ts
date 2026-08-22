@@ -1,40 +1,52 @@
 import { NextResponse } from 'next/server'
-import {
-  getConversation,
-  getLatestConversation,
-  insertConversation,
-  listQueries,
-} from '../../db/queries'
-import { fencyFetch } from '../../fency'
+import { getAuthorizedUserId } from '../../../auth'
+import { createFencyConversation } from './createFencyConversation'
+import { searchFencyConversations } from './searchFencyConversations'
 
-export async function GET(request: Request) {
-  const url = new URL(request.url)
-  const id = url.searchParams.get('id')
-  const conversation = id ? await getConversation(id) : await getLatestConversation()
+export const dynamic = 'force-dynamic'
 
-  if (!conversation) {
-    return NextResponse.json({ conversation: null, queries: [] })
+export async function GET() {
+  const userId = await getAuthorizedUserId()
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const queries = await listQueries(conversation.id)
-  return NextResponse.json({ conversation, queries })
+  const { ok, status, data } = await searchFencyConversations(userId)
+
+  if (!ok) {
+    return NextResponse.json(data, { status })
+  }
+
+  const conversations = (data.items ?? []).map((item) => ({
+    id: item.id,
+    title: item.title ?? null,
+    createdAt: item.createdAt,
+  }))
+  return NextResponse.json({ conversations })
 }
 
 export async function POST() {
-  const response = await fencyFetch('/v1/conversations', {
-    method: 'POST',
-    body: JSON.stringify({
-      metadata: { example: 'explore-memories' },
-    }),
-  })
-  const data = (await response.json()) as { id?: string; error?: unknown }
-
-  if (!response.ok || typeof data.id !== 'string') {
-    return NextResponse.json(data, { status: response.status })
+  const userId = await getAuthorizedUserId()
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const conversation = await insertConversation({
-    fencyConversationId: data.id,
+  const { ok, status, data } = await createFencyConversation({
+    metadata: { userId },
   })
-  return NextResponse.json({ conversation, queries: [] }, { status: 201 })
+
+  if (!ok || typeof data.id !== 'string') {
+    return NextResponse.json(data, { status })
+  }
+
+  return NextResponse.json(
+    {
+      conversation: {
+        id: data.id,
+        title: data.title ?? null,
+        createdAt: data.createdAt,
+      },
+    },
+    { status: 201 },
+  )
 }

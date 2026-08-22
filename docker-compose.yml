@@ -1,19 +1,14 @@
 services:
   postgres:
-    image: postgres:18-alpine
-    environment:
-      POSTGRES_USER: fency_examples
-      POSTGRES_PASSWORD: fency_examples
-      POSTGRES_DB: fency_examples
+    image: postgres:16
     ports:
-      - '10120:5432'
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: fency
+      POSTGRES_PASSWORD: fency
+      POSTGRES_DB: fency_react_examples
     volumes:
-      - fency_examples_pgdata:/var/lib/postgresql
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U fency_examples -d fency_examples']
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - fency_react_examples_pg:/var/lib/postgresql/data
 
 volumes:
-  fency_examples_pgdata:
+  fency_react_examples_pg:

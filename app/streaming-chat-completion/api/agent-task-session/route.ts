@@ -1,9 +1,16 @@
-import { createSession } from '../../fency'
+import { NextResponse } from 'next/server'
+import { getAuthorizedUserId } from '../../../auth'
+import { createFencySession } from '../createFencySession'
 
 export async function POST() {
-  return createSession({
+  const userId = await getAuthorizedUserId()
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  return createFencySession({
     createAgentTask: {
       taskType: 'STREAMING_CHAT_COMPLETION',
+      metadata: { userId },
     },
   })
 }

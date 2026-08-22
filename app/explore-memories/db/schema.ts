@@ -1,25 +1,50 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import {
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core'
 
-export const exploreConversations = pgTable('explore_conversations', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  fencyConversationId: text('fency_conversation_id').notNull().unique(),
-  title: text('title'),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-})
+export const exploreMemoriesMemoryTypes = pgTable(
+  'explore_memories_memory_types',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    name: text('name').notNull().unique(),
+    fencyMemoryTypeId: text('fency_memory_type_id').notNull().unique(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+)
 
-export const exploreQueries = pgTable('explore_queries', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  conversationId: uuid('conversation_id')
-    .notNull()
-    .references(() => exploreConversations.id, { onDelete: 'cascade' }),
-  query: text('query').notNull(),
-  fencyAgentTaskId: text('fency_agent_task_id'),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-})
-
-export type ExploreConversation = typeof exploreConversations.$inferSelect
-export type ExploreQuery = typeof exploreQueries.$inferSelect
+export const exploreMemoriesCars = pgTable(
+  'explore_memories_cars',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull(),
+    identity: text('identity').notNull().unique(),
+    make: text('make').notNull(),
+    model: text('model').notNull(),
+    year: integer('year').notNull(),
+    color: text('color').notNull(),
+    priceUsd: integer('price_usd').notNull(),
+    mileageKm: integer('mileage_km').notNull(),
+    fuelType: text('fuel_type').notNull(),
+    transmission: text('transmission').notNull(),
+    bodyStyle: text('body_style').notNull(),
+    horsepower: integer('horsepower').notNull(),
+    fencyMemoryId: text('fency_memory_id'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('explore_memories_cars_user_identity_idx').on(
+      table.userId,
+      table.identity,
+    ),
+  ],
+)

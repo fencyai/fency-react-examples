@@ -1,6 +1,18 @@
+import { ClerkProvider } from '@clerk/nextjs'
+import '@mantine/core/styles.css'
+import {
+  ColorSchemeScript,
+  MantineProvider,
+  createTheme,
+  mantineHtmlProps,
+} from '@mantine/core'
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { AppHeader } from './AppHeader'
 import './globals.css'
+
+const theme = createTheme({
+  defaultRadius: 'lg',
+})
 
 export const metadata: Metadata = {
   title: 'Fency React Examples',
@@ -14,34 +26,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen flex-col antialiased">
-        <header className="border-b border-(--border) bg-(--card)">
-          <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
-            <Link href="/" className="font-semibold">
-              Fency examples
-            </Link>
-            <Link
-              href="/streaming-chat-completion"
-              className="text-(--muted) hover:text-(--foreground)"
-            >
-              Streaming chat
-            </Link>
-            <Link
-              href="/structured-chat-completion"
-              className="text-(--muted) hover:text-(--foreground)"
-            >
-              Structured chat
-            </Link>
-            <Link
-              href="/explore-memories"
-              className="text-(--muted) hover:text-(--foreground)"
-            >
-              Explore memories
-            </Link>
-          </nav>
-        </header>
-        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
+    <html lang="en" {...mantineHtmlProps}>
+      <head>
+        <ColorSchemeScript defaultColorScheme="auto" />
+      </head>
+      <body className="flex h-dvh flex-col overflow-hidden antialiased">
+        <ClerkProvider>
+          <MantineProvider defaultColorScheme="auto" theme={theme}>
+            <AppHeader />
+            <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+              {children}
+            </main>
+          </MantineProvider>
+        </ClerkProvider>
       </body>
     </html>
   )
