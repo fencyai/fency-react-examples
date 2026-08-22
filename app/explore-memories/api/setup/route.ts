@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../auth'
+import { getExampleVersionTag } from '../../../exampleVersionTag'
 import {
   DEMO_CAR_CATALOG_SIZE,
   countSyncedUserCars,
@@ -15,10 +16,12 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const synced = await countSyncedUserCars(userId)
+  const versionTag = getExampleVersionTag('explore-memories')
+  const synced = await countSyncedUserCars(userId, versionTag)
   return NextResponse.json({
     ready: synced >= DEMO_CAR_CATALOG_SIZE,
     syncedCars: synced,
+    versionTag,
   })
 }
 
@@ -29,12 +32,14 @@ export async function POST() {
   }
 
   try {
+    const versionTag = getExampleVersionTag('explore-memories')
     const memoryTypeId = await ensureDemoCarMemoryType()
-    await syncDemoCars(userId, memoryTypeId)
+    await syncDemoCars(userId, memoryTypeId, versionTag)
     return NextResponse.json({
       ready: true,
       memoryTypeId,
       syncedCars: DEMO_CAR_CATALOG_SIZE,
+      versionTag,
     })
   } catch (error) {
     console.error('Explore memories setup failed:', error)

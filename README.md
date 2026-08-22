@@ -16,14 +16,31 @@ Set the Fency keys in `.env.local`:
 FENCY_SECRET_KEY=sk_...
 NEXT_PUBLIC_FENCY_PUBLISHABLE_KEY=pk_...
 DATABASE_URL=postgresql://fency:fency@127.0.0.1:5433/fency_react_examples
+EXPLORE_MEMORIES_VERSION_TAG=explore_memories_local_v1
 ```
 
+Explore Memories versions its DemoCar catalog with
+`EXPLORE_MEMORIES_VERSION_TAG`. Changing that value isolates a new dataset in
+Fency; the setup gate will ask you to seed again. Use a different tag in
+production (`explore_memories_prod_v1`) so local and prod do not share
+memories.
+
 Explore Memories stores the DemoCar catalog in Postgres, then writes each
-row's Fency `memoryId` after sync. Start Postgres and push the schema:
+row's Fency `memoryId` after sync. Start Postgres and apply migrations:
 
 ```bash
 docker compose up -d
-npm run db:push
+npm run db:migrate
+```
+
+`db:push` remains a local shortcut. After schema changes, generate a
+migration with `npm run db:generate`.
+
+After setting `DATABASE_URL` on Vercel, apply the same migrations to the
+prod Neon database (reads the URL from 1Password):
+
+```bash
+./run-neon-migrations-prod.sh
 ```
 
 If Clerk keys are missing, run:

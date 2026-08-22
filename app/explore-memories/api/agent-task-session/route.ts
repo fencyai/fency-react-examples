@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../auth'
+import { getExampleVersionTag } from '../../../exampleVersionTag'
 import { getSyncedCarCatalog } from '../../db/queries'
 import { createFencySession } from '../createFencySession'
 import { getFencyConversation } from '../getFencyConversation'
@@ -34,7 +35,8 @@ export async function POST(request: Request) {
     )
   }
 
-  const catalog = await getSyncedCarCatalog(userId)
+  const versionTag = getExampleVersionTag('explore-memories')
+  const catalog = await getSyncedCarCatalog(userId, versionTag)
   if (!catalog) {
     return NextResponse.json(
       { error: 'Create the DemoCar catalog before exploring memories.' },
@@ -50,7 +52,8 @@ export async function POST(request: Request) {
       background: 'You help the user explore a catalog of 100 cars.',
       guardRails: buildExploreCarGuardRails(
         catalog.memoryTypeId,
-        catalog.memoryIds,
+        catalog.versionTag,
+        userId,
       ),
     },
   })

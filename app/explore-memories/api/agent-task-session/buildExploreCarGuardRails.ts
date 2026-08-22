@@ -1,14 +1,20 @@
+import { DEMO_CAR_TAG_KEY } from '../../db/queries'
+
 export function buildExploreCarGuardRails(
   memoryTypeId: string,
-  memoryIds: string[],
+  versionTag: string,
+  userId: string,
 ) {
   return {
     memoryTypes: [
       {
         memoryTypeId,
-        memoryIds,
+        match: { [DEMO_CAR_TAG_KEY]: versionTag, userId },
         metadata: [
-          { key: 'id', visible: true, description: 'Catalog identity' },
+          { key: 'id', visible: false },
+          { key: DEMO_CAR_TAG_KEY, visible: false },
+          { key: 'userId', visible: false },
+          { key: 'catalog_id', visible: true, description: 'Catalog identity' },
           { key: 'make', visible: true, description: 'Vehicle make' },
           { key: 'model', visible: true, description: 'Vehicle model' },
           { key: 'year', visible: true, description: 'Model year' },

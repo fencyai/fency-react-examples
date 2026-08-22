@@ -24,7 +24,8 @@ export const exploreMemoriesCars = pgTable(
   {
     id: uuid('id').defaultRandom().primaryKey(),
     userId: text('user_id').notNull(),
-    identity: text('identity').notNull().unique(),
+    identity: text('identity').notNull(),
+    versionTag: text('version_tag').notNull(),
     make: text('make').notNull(),
     model: text('model').notNull(),
     year: integer('year').notNull(),
@@ -42,9 +43,10 @@ export const exploreMemoriesCars = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex('explore_memories_cars_user_identity_idx').on(
+    uniqueIndex('explore_memories_cars_user_identity_tag_idx').on(
       table.userId,
       table.identity,
+      table.versionTag,
     ),
   ],
 )

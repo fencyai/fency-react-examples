@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { DEMO_CAR_CATALOG_SIZE } from '../../db/queries'
+import { DEMO_CAR_CATALOG_SIZE, DEMO_CAR_TAG_KEY } from '../../db/queries'
 
 const MAKES = [
   { make: 'Toyota', models: ['Camry', 'Corolla', 'RAV4', 'Prius'] },
@@ -40,6 +40,7 @@ const BODY_STYLES = [
 export type DemoCarRecord = {
   userId: string
   identity: string
+  versionTag: string
   make: string
   model: string
   year: number
@@ -53,8 +54,24 @@ export type DemoCarRecord = {
   updatedAt: Date
 }
 
+export function demoCarMemoryId(versionTag: string, identity: string) {
+  return `${versionTag}:${identity}`
+}
+
+export function catalogIdentityFromMemoryId(
+  versionTag: string,
+  memoryId: string,
+) {
+  const prefix = `${versionTag}:`
+  if (!memoryId.startsWith(prefix)) {
+    return null
+  }
+  return memoryId.slice(prefix.length)
+}
+
 export function buildDemoCarCatalog(
   userId: string,
+  versionTag: string,
   updatedAt: Date,
 ): DemoCarRecord[] {
   const userHash = createHash('sha256').update(userId).digest('hex').slice(0, 8)
@@ -69,6 +86,7 @@ export function buildDemoCarCatalog(
     return {
       userId,
       identity: `car_${userHash}_${index + 1}`,
+      versionTag,
       make: brand.make,
       model,
       year,
@@ -90,7 +108,9 @@ export function demoCarTitle(car: DemoCarRecord) {
 
 export function demoCarMetadata(car: DemoCarRecord) {
   return {
-    id: car.identity,
+    id: demoCarMemoryId(car.versionTag, car.identity),
+    catalog_id: car.identity,
+    [DEMO_CAR_TAG_KEY]: car.versionTag,
     userId: car.userId,
     updated_at: car.updatedAt.toISOString(),
     make: car.make,

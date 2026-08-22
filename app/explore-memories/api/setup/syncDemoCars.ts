@@ -7,9 +7,11 @@ import {
   insertCars,
   listUserCars,
   setCarMemoryIds,
+  wipeStaleUserCars,
 } from '../../db/queries'
 import {
   buildDemoCarCatalog,
+  catalogIdentityFromMemoryId,
   demoCarMetadata,
   demoCarTitle,
 } from './carCatalog'
@@ -23,8 +25,12 @@ async function sleep(ms: number) {
   })
 }
 
-async function mapMemoryIds(memoryIds: string[]) {
-  const mappings: Array<{ identity: string; fencyMemoryId: string }> = []
+async function mapMemoryIds(memoryIds: string[], versionTag: string) {
+  const mappings: Array<{
+    identity: string
+    versionTag: string
+    fencyMemoryId: string
+  }> = []
 
   for (const chunk of chunkItems(memoryIds, 10)) {
     const pages = await Promise.all(chunk.map((id) => getFencyMemory(id)))
@@ -32,9 +38,17 @@ async function mapMemoryIds(memoryIds: string[]) {
       if (!page.ok || typeof page.data.id !== 'string') {
         continue
       }
-      const identity = page.data.metadata?.id
-      if (typeof identity === 'string') {
-        mappings.push({ identity, fencyMemoryId: page.data.id })
+      const taggedId = page.data.metadata?.id
+      if (typeof taggedId !== 'string') {
+        continue
+      }
+      const identity = catalogIdentityFromMemoryId(versionTag, taggedId)
+      if (identity) {
+        mappings.push({
+          identity,
+          versionTag,
+          fencyMemoryId: page.data.id,
+        })
       }
     }
   }
@@ -52,17 +66,23 @@ function chunkItems<T>(items: T[], size: number) {
   return chunks
 }
 
-export async function syncDemoCars(userId: string, memoryTypeId: string) {
+export async function syncDemoCars(
+  userId: string,
+  memoryTypeId: string,
+  versionTag: string,
+) {
+  await wipeStaleUserCars(userId, versionTag)
+
   const updatedAt = new Date()
-  const catalog = buildDemoCarCatalog(userId, updatedAt)
+  const catalog = buildDemoCarCatalog(userId, versionTag, updatedAt)
   await insertCars(catalog)
 
-  if ((await countSyncedUserCars(userId)) >= DEMO_CAR_CATALOG_SIZE) {
+  if ((await countSyncedUserCars(userId, versionTag)) >= DEMO_CAR_CATALOG_SIZE) {
     return
   }
 
-  await bumpUnsyncedCarUpdatedAt(userId, updatedAt)
-  const cars = await listUserCars(userId)
+  await bumpUnsyncedCarUpdatedAt(userId, versionTag, updatedAt)
+  const cars = await listUserCars(userId, versionTag)
   const unsynced = cars.filter((car) => !car.fencyMemoryId)
   const toSync = unsynced.length > 0 ? unsynced : cars
 
@@ -112,9 +132,9 @@ export async function syncDemoCars(userId: string, memoryTypeId: string) {
     await sleep(500)
   }
 
-  await mapMemoryIds([...created, ...updated])
+  await mapMemoryIds([...created, ...updated], versionTag)
 
-  if ((await countSyncedUserCars(userId)) < DEMO_CAR_CATALOG_SIZE) {
+  if ((await countSyncedUserCars(userId, versionTag)) < DEMO_CAR_CATALOG_SIZE) {
     throw new Error('DemoCar rows were not all assigned a Fency memory id.')
   }
 }

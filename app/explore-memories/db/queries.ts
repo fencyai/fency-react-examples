@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { and, eq, isNotNull, isNull } from 'drizzle-orm'
+import { and, eq, isNotNull, isNull, ne } from 'drizzle-orm'
 import { db } from './client'
 import {
   exploreMemoriesCars,
@@ -9,6 +9,7 @@ import {
 
 export const DEMO_CAR_MEMORY_TYPE_NAME = 'DemoCar'
 export const DEMO_CAR_CATALOG_SIZE = 100
+export const DEMO_CAR_TAG_KEY = 'demoCarTag'
 
 export type DemoCarRow = typeof exploreMemoriesCars.$inferSelect
 
@@ -43,30 +44,58 @@ export async function saveDemoCarMemoryType(fencyMemoryTypeId: string) {
   return row
 }
 
-export async function listUserCars(userId: string) {
+export async function listUserCars(userId: string, versionTag: string) {
   return db
     .select()
     .from(exploreMemoriesCars)
-    .where(eq(exploreMemoriesCars.userId, userId))
+    .where(
+      and(
+        eq(exploreMemoriesCars.userId, userId),
+        eq(exploreMemoriesCars.versionTag, versionTag),
+      ),
+    )
 }
 
-export async function countSyncedUserCars(userId: string) {
+export async function countSyncedUserCars(userId: string, versionTag: string) {
   const rows = await db
     .select({ id: exploreMemoriesCars.id })
     .from(exploreMemoriesCars)
     .where(
       and(
         eq(exploreMemoriesCars.userId, userId),
+        eq(exploreMemoriesCars.versionTag, versionTag),
         isNotNull(exploreMemoriesCars.fencyMemoryId),
       ),
     )
   return rows.length
 }
 
+export async function wipeStaleUserCars(userId: string, versionTag: string) {
+  await db
+    .delete(exploreMemoriesCars)
+    .where(
+      and(
+        eq(exploreMemoriesCars.userId, userId),
+        ne(exploreMemoriesCars.versionTag, versionTag),
+      ),
+    )
+
+  await db
+    .delete(exploreMemoriesCars)
+    .where(
+      and(
+        eq(exploreMemoriesCars.userId, userId),
+        eq(exploreMemoriesCars.versionTag, versionTag),
+        isNull(exploreMemoriesCars.fencyMemoryId),
+      ),
+    )
+}
+
 export async function insertCars(
   cars: Array<{
     userId: string
     identity: string
+    versionTag: string
     make: string
     model: string
     year: number
@@ -87,49 +116,65 @@ export async function insertCars(
   await db
     .insert(exploreMemoriesCars)
     .values(cars)
-    .onConflictDoNothing({ target: exploreMemoriesCars.identity })
+    .onConflictDoNothing({
+      target: [
+        exploreMemoriesCars.userId,
+        exploreMemoriesCars.identity,
+        exploreMemoriesCars.versionTag,
+      ],
+    })
 }
 
-export async function bumpUnsyncedCarUpdatedAt(userId: string, updatedAt: Date) {
+export async function bumpUnsyncedCarUpdatedAt(
+  userId: string,
+  versionTag: string,
+  updatedAt: Date,
+) {
   await db
     .update(exploreMemoriesCars)
     .set({ updatedAt })
     .where(
       and(
         eq(exploreMemoriesCars.userId, userId),
+        eq(exploreMemoriesCars.versionTag, versionTag),
         isNull(exploreMemoriesCars.fencyMemoryId),
       ),
     )
 }
 
 export async function setCarMemoryIds(
-  mappings: Array<{ identity: string; fencyMemoryId: string }>,
+  mappings: Array<{
+    identity: string
+    versionTag: string
+    fencyMemoryId: string
+  }>,
 ) {
   for (const mapping of mappings) {
     await db
       .update(exploreMemoriesCars)
       .set({ fencyMemoryId: mapping.fencyMemoryId })
-      .where(eq(exploreMemoriesCars.identity, mapping.identity))
+      .where(
+        and(
+          eq(exploreMemoriesCars.identity, mapping.identity),
+          eq(exploreMemoriesCars.versionTag, mapping.versionTag),
+        ),
+      )
   }
 }
 
-export async function getSyncedCarCatalog(userId: string) {
+export async function getSyncedCarCatalog(userId: string, versionTag: string) {
   const memoryType = await getDemoCarMemoryType()
   if (!memoryType) {
     return null
   }
 
-  const cars = await listUserCars(userId)
-  const memoryIds = cars
-    .map((car) => car.fencyMemoryId)
-    .filter((id): id is string => typeof id === 'string' && id.length > 0)
-
-  if (memoryIds.length < DEMO_CAR_CATALOG_SIZE) {
+  const synced = await countSyncedUserCars(userId, versionTag)
+  if (synced < DEMO_CAR_CATALOG_SIZE) {
     return null
   }
 
   return {
     memoryTypeId: memoryType.fencyMemoryTypeId,
-    memoryIds,
+    versionTag,
   }
 }
