@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: 'Fency React Examples',
   description:
     'End-to-end Next.js examples for the Fency public API and published SDKs.',
+  icons: {
+    icon: [{ url: '/fency-favicon.svg', type: 'image/svg+xml' }],
+  },
 }
 
 export default function RootLayout({
