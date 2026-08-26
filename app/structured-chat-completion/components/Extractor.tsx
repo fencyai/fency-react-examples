@@ -1,86 +1,15 @@
 'use client'
 
-import { Alert, Button, Stack, Text, Textarea, Title } from '@mantine/core'
-import { AgentTaskProgress, useAgentTasks } from '@fencyai/react'
-import { useState } from 'react'
-import {
-  extractionJsonSchema,
-  extractionSchema,
-  type Extraction,
-} from '../extractionSchema'
+import { Alert, Text, Title } from '@mantine/core'
+import { AgentTaskProgress } from '@fencyai/react'
+import { useStructuredExtraction } from '../hooks/useStructuredExtraction'
+import { ExtractionForm } from './ExtractionForm'
 import { RecordCard } from './RecordCard'
 import { SchemaPreview } from './SchemaPreview'
 
-const SAMPLE_TEXT = `Maya Chen is the Head of Product at Harborline, a logistics startup in Oslo. She previously led marketplace operations at a Nordic retailer. Reach her at maya.chen@harborline.example.`
-
 export function Extractor() {
-  const [input, setInput] = useState(SAMPLE_TEXT)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [latestResult, setLatestResult] = useState<Extraction | null>(null)
-
-  const { latest, createAgentTask } = useAgentTasks({})
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault()
-    const trimmed = input.trim()
-    if (!trimmed || isSubmitting) {
-      return
-    }
-
-    setIsSubmitting(true)
-    setLatestResult(null)
-
-    try {
-      const response = await createAgentTask(
-        {
-          type: 'StructuredChatCompletion',
-          messages: [
-            {
-              role: 'SYSTEM',
-              content:
-                'Extract a single person record from the user text. Use empty strings for fields that are not mentioned.',
-            },
-            { role: 'USER', content: trimmed },
-          ],
-          model: 'anthropic/claude-sonnet-4.6',
-          jsonSchema: extractionJsonSchema,
-        },
-        {
-          fetchCreateAgentTaskClientToken: async () => {
-            const res = await fetch(
-              '/structured-chat-completion/api/agent-task-session',
-              { method: 'POST' },
-            )
-            if (!res.ok) {
-              throw new Error('Failed to create agent task session')
-            }
-            const data = (await res.json()) as { clientToken?: string }
-            if (!data.clientToken) {
-              throw new Error('No clientToken in session response')
-            }
-            return { clientToken: data.clientToken }
-          },
-        },
-      )
-
-      if (
-        response.type !== 'success' ||
-        response.response.taskType !== 'StructuredChatCompletion'
-      ) {
-        return
-      }
-
-      setLatestResult(
-        extractionSchema.parse(
-          JSON.parse(response.response.response.jsonResponse),
-        ),
-      )
-    } catch {
-      // Task errors also surface on latest.error
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  const { latestTask, latestResult, isSubmitting, extract } =
+    useStructuredExtraction()
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6">
@@ -97,34 +26,17 @@ export function Extractor() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <Stack gap="sm">
-          <Textarea
-            value={input}
-            onChange={(event) => setInput(event.currentTarget.value)}
-            rows={6}
-            disabled={isSubmitting}
-          />
-          <Button
-            type="submit"
-            variant="default"
-            disabled={isSubmitting || !input.trim()}
-            style={{ alignSelf: 'flex-start' }}
-          >
-            {isSubmitting ? 'Extracting...' : 'Extract record'}
-          </Button>
-        </Stack>
-      </form>
+      <ExtractionForm isSubmitting={isSubmitting} onExtract={extract} />
 
-      {isSubmitting && latest?.params.type === 'StructuredChatCompletion' ? (
-        latest.error ? (
-          <Alert color="red">{latest.error.message}</Alert>
-        ) : (
-          <AgentTaskProgress agentTask={latest} />
-        )
+      {latestTask?.error ? (
+        <Alert color="red">{latestTask.error.message}</Alert>
+      ) : latestTask ? (
+        <AgentTaskProgress agentTask={latestTask} />
       ) : null}
 
-      {latestResult ? <RecordCard title="Latest result" record={latestResult} /> : null}
+      {latestResult ? (
+        <RecordCard title="Latest result" record={latestResult} />
+      ) : null}
     </div>
   )
 }

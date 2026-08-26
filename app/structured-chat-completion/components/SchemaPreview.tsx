@@ -1,23 +1,23 @@
 import { Code, Text } from '@mantine/core'
+import { z } from 'zod'
 import { extractionJsonSchema } from '../extractionSchema'
 
-type JsonSchemaProperty = {
-  type?: string
-  description?: string
-}
+const jsonSchemaPreviewSchema = z.object({
+  properties: z.record(
+    z.string(),
+    z.object({
+      type: z.string(),
+      description: z.string(),
+    }),
+  ),
+})
 
-type JsonSchema = {
-  properties?: Record<string, JsonSchemaProperty>
-}
-
-const schema = JSON.parse(extractionJsonSchema) as JsonSchema
-const fields = Object.entries(schema.properties ?? {}).map(
-  ([name, property]) => ({
-    name,
-    type: property.type ?? 'unknown',
-    description: property.description ?? '',
-  }),
-)
+const schema = jsonSchemaPreviewSchema.parse(JSON.parse(extractionJsonSchema))
+const fields = Object.entries(schema.properties).map(([name, property]) => ({
+  name,
+  type: property.type,
+  description: property.description,
+}))
 
 export function SchemaPreview() {
   return (
@@ -29,8 +29,7 @@ export function SchemaPreview() {
           </dt>
           <dd>
             <Text size="xs" c="dimmed">
-              {field.type}
-              {field.description ? ` - ${field.description}` : ''}
+              {field.type} - {field.description}
             </Text>
           </dd>
         </div>
