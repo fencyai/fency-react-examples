@@ -1,9 +1,5 @@
 import { Paper, Text } from '@mantine/core'
-
-export type ChatMessage = {
-  role: 'USER' | 'ASSISTANT' | 'SYSTEM'
-  content: string
-}
+import type { ChatMessage } from '../ChatMessage'
 
 export function Bubble({ message }: { message: ChatMessage }) {
   if (message.role === 'SYSTEM') {

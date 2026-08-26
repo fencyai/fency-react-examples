@@ -35,6 +35,17 @@ well-known patterns.
   bury it under edge-case handling, retries, or exhaustive validation. On an
   unknown edge case, just throw. A short `throw new Error(...)` is better for
   the reader than branching that obscures the Fency integration being taught.
+- Keep the file structure intuitive and files lean. A file name should match
+  the class, function, or component it exports (`Chat.tsx` exports `Chat`,
+  `useStreamingChat.ts` exports `useStreamingChat`). Split a file when it
+  accumulates unrelated responsibilities, and delete folders that hold
+  nothing.
+- Code must be self-explanatory. It should read cleanly without excessive
+  commenting to explain complexity. If a section needs a comment to be
+  understood, restructure or rename until it does not.
+- Prefer a Zod schema over a TypeScript `as` cast when reading unknown data
+  such as JSON bodies and fetch responses. Use `schema.parse(...)` so a bad
+  shape throws; do not cast the result.
 
 ## Package by feature, then by layer
 
@@ -95,8 +106,16 @@ These rules are the point of the repo. Do not "clean them up."
 10. **Published SDKs only.** Depend on `@fencyai/js` and `@fencyai/react` from
     npm. Never use `file:` links or `transpilePackages` for local SDK copies.
 11. **Fency API base URL is constant.** Always `https://api.fency.ai`. Do not
-    add a base-URL env var. The client omits `baseUrl` on `loadFency`. The
-    server hardcodes the URL in that example's `api/createFencySession.ts`.
+    add a base-URL env var. The client omits `baseUrl` on `loadFency`. Each
+    session route hardcodes the URL in its own `route.ts`.
+12. **Session routes are standalone.** Do not extract a shared
+    `createFencySession` helper. Duplicate the `POST /v1/sessions` call in
+    each session `route.ts` so a reader can understand that session from one
+    file.
+13. **Name API routes by action.** Use a verb-first folder name that matches
+    what the route does, for example `api/create-stream-session` and
+    `api/create-agent-task-session`. Do not name a route after the resource
+    noun alone.
 
 ## Root shell (out of scope for every guide)
 
@@ -115,11 +134,11 @@ and must stay that way:
 ## Adding an example
 
 1. Create `app/<example-slug>/` with its own page, `components/`, and
-   colocated `api/` routes (`api/createFencySession.ts` plus session routes).
-   Import `getAuthorizedUserId` from `app/auth.ts`. Put `FencyProvider` in that
-   example's `page.tsx`. Add a `hooks/` folder only when that example needs
-   hooks. Add `db/schema.ts`, `db/client.ts`, and `db/queries.ts` only if the
-   example persists memory types or memories.
+   colocated standalone `api/` session routes. Import `getAuthorizedUserId`
+   from `app/auth.ts`. Put `FencyProvider` in that example's `page.tsx`. Add a
+   `hooks/` folder only when that example needs hooks. Add `db/schema.ts`,
+   `db/client.ts`, and `db/queries.ts` only if the example persists memory
+   types or memories.
 2. If it persists, prefix every table name with the slug and add a Drizzle
    config when that example is introduced.
 3. Add a card on `app/page.tsx` and a link in `app/AppHeader.tsx`. Protect the
