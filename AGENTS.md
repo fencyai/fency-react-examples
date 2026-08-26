@@ -16,6 +16,50 @@ folder. That is why the examples must not share code.
 The guides live in `customers/fency-docs-v2/content/docs/integration/` in the
 Fency workspace (published as the Integration section of the docs site).
 
+## Code quality bar
+
+This is a customer-facing public webapp. Customers read this code to learn the
+Fency framework, so every file is documentation. The code needs special
+attention to detail with regards to software architecture, clean code, and
+well-known patterns.
+
+- Prefer well-known, idiomatic React and Next.js patterns over clever or
+  novel ones. A reader should recognize the shape of the code immediately.
+- Use intention-revealing names and small, single-purpose functions and
+  components. If a file needs a comment to explain what it does, first try
+  renaming or splitting it.
+- Keep examples free of dead code, debug leftovers, and speculative
+  abstractions. Ship only what the matching guide teaches.
+- Readability and pragmatism beat defensive programming. The examples are
+  happy-path code: make the documented flow work and read cleanly, and do not
+  bury it under edge-case handling, retries, or exhaustive validation. On an
+  unknown edge case, just throw. A short `throw new Error(...)` is better for
+  the reader than branching that obscures the Fency integration being taught.
+
+## Package by feature, then by layer
+
+The repo is organized package-by-feature first, package-by-layer second:
+
+1. **Feature packages.** Each example folder under `app/` (for example
+   `app/explore-memories/`) is one feature package. Everything the feature
+   needs lives inside its folder; nothing leaks out (see the no-overlap
+   contract below).
+2. **Layer packages inside each feature.** Within a feature, group files by
+   layer using these folder names:
+   - `page.tsx` — the feature's entry point.
+   - `components/` — UI layer, one React component per file.
+   - `hooks/` — client-side state and orchestration layer.
+   - `api/` — server layer: route handlers plus the Fency API calls they
+     make. Route-specific helpers live next to their `route.ts`.
+   - `db/` — persistence layer (`schema.ts`, `client.ts`, `queries.ts`,
+     `migrations/`), only when the feature persists data.
+3. **Dependencies point inward.** `components/` may use `hooks/`; `hooks/`
+   call the feature's `api/` routes over HTTP; `api/` may use `db/`. Never
+   the other way around, and never sideways into another feature.
+4. **Add layers, not levels.** When a feature grows, add files to the
+   correct layer folder instead of inventing new top-level folders or
+   nesting layers inside layers.
+
 ## No-overlap contract
 
 These rules are the point of the repo. Do not "clean them up."
