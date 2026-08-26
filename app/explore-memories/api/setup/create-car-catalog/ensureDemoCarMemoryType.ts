@@ -1,15 +1,14 @@
 import 'server-only'
 
-import {
-  DEMO_CAR_MEMORY_TYPE_NAME,
-  getDemoCarMemoryType,
-  saveDemoCarMemoryType,
-} from '../../../db/queries'
+import { DEMO_CAR_MEMORY_TYPE_NAME } from '../../../demoCarConstants'
+import { memoryTypeRepository } from '../../../db/memoryTypeRepository'
 import { createFencyMemoryType } from './createFencyMemoryType'
 import { listFencyMemoryTypes } from './listFencyMemoryTypes'
 
 export async function ensureDemoCarMemoryType() {
-  const stored = await getDemoCarMemoryType()
+  const stored = await memoryTypeRepository.findByName(
+    DEMO_CAR_MEMORY_TYPE_NAME,
+  )
   if (stored) {
     return stored.fencyMemoryTypeId
   }
@@ -23,7 +22,10 @@ export async function ensureDemoCarMemoryType() {
   })
 
   if (created.ok && typeof created.data.id === 'string') {
-    await saveDemoCarMemoryType(created.data.id)
+    await memoryTypeRepository.save(
+      DEMO_CAR_MEMORY_TYPE_NAME,
+      created.data.id,
+    )
     return created.data.id
   }
 
@@ -38,6 +40,6 @@ export async function ensureDemoCarMemoryType() {
     )
   }
 
-  await saveDemoCarMemoryType(existing.id)
+  await memoryTypeRepository.save(DEMO_CAR_MEMORY_TYPE_NAME, existing.id)
   return existing.id
 }

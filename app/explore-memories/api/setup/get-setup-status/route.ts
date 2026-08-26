@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../../auth'
-import {
-  DEMO_CAR_CATALOG_SIZE,
-  countSyncedUserCars,
-} from '../../../db/queries'
+import { DEMO_CAR_CATALOG_SIZE } from '../../../demoCarConstants'
+import { carRepository } from '../../../db/carRepository'
 import { getExploreMemoriesVersionTag } from '../../../versionTag'
 
 export const dynamic = 'force-dynamic'
@@ -15,7 +13,7 @@ export async function GET() {
   }
 
   const versionTag = getExploreMemoriesVersionTag()
-  const synced = await countSyncedUserCars(userId, versionTag)
+  const synced = await carRepository.countSynced(userId, versionTag)
   return NextResponse.json({
     ready: synced >= DEMO_CAR_CATALOG_SIZE,
     syncedCars: synced,

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getAuthorizedUserId } from '../../../auth'
-import { getSyncedCarCatalog } from '../../db/queries'
+import { getSyncedCarCatalog } from './getSyncedCarCatalog'
 import { getExploreMemoriesVersionTag } from '../../versionTag'
 import { getFencyConversation } from '../getFencyConversation'
 import { buildExploreCarGuardRails } from './buildExploreCarGuardRails'

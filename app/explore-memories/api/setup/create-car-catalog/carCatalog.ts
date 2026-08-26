@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { DEMO_CAR_CATALOG_SIZE, DEMO_CAR_TAG_KEY } from '../../../db/queries'
+import { DEMO_CAR_CATALOG_SIZE, DEMO_CAR_TAG_KEY } from '../../../demoCarConstants'
 
 const MAKES = [
   { make: 'Toyota', models: ['Camry', 'Corolla', 'RAV4', 'Prius'] },

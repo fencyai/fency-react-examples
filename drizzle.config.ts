@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
-  schema: './app/explore-memories/db/schema.ts',
+  schema: './app/explore-memories/db/*Table.ts',
   out: './app/explore-memories/db/migrations',
   dialect: 'postgresql',
   dbCredentials: {

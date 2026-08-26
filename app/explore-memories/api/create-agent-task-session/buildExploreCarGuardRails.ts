@@ -1,4 +1,4 @@
-import { DEMO_CAR_TAG_KEY } from '../../db/queries'
+import { DEMO_CAR_TAG_KEY } from '../../demoCarConstants'
 
 export function buildExploreCarGuardRails(
   memoryTypeId: string,

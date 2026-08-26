@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../../auth'
-import { DEMO_CAR_CATALOG_SIZE } from '../../../db/queries'
+import { DEMO_CAR_CATALOG_SIZE } from '../../../demoCarConstants'
 import { getExploreMemoriesVersionTag } from '../../../versionTag'
 import { ensureDemoCarMemoryType } from './ensureDemoCarMemoryType'
 import { syncDemoCars } from './syncDemoCars'

@@ -1,14 +1,7 @@
 import 'server-only'
 
-import {
-  DEMO_CAR_CATALOG_SIZE,
-  bumpUnsyncedCarUpdatedAt,
-  countSyncedUserCars,
-  insertCars,
-  listUserCars,
-  setCarMemoryIds,
-  wipeStaleUserCars,
-} from '../../../db/queries'
+import { DEMO_CAR_CATALOG_SIZE } from '../../../demoCarConstants'
+import { carRepository } from '../../../db/carRepository'
 import {
   buildDemoCarCatalog,
   catalogIdentityFromMemoryId,
@@ -54,7 +47,7 @@ async function mapMemoryIds(memoryIds: string[], versionTag: string) {
   }
 
   if (mappings.length > 0) {
-    await setCarMemoryIds(mappings)
+    await carRepository.assignMemoryIds(mappings)
   }
 }
 
@@ -71,18 +64,18 @@ export async function syncDemoCars(
   memoryTypeId: string,
   versionTag: string,
 ) {
-  await wipeStaleUserCars(userId, versionTag)
+  await carRepository.deleteStale(userId, versionTag)
 
   const updatedAt = new Date()
   const catalog = buildDemoCarCatalog(userId, versionTag, updatedAt)
-  await insertCars(catalog)
+  await carRepository.insertMany(catalog)
 
-  if ((await countSyncedUserCars(userId, versionTag)) >= DEMO_CAR_CATALOG_SIZE) {
+  if ((await carRepository.countSynced(userId, versionTag)) >= DEMO_CAR_CATALOG_SIZE) {
     return
   }
 
-  await bumpUnsyncedCarUpdatedAt(userId, versionTag, updatedAt)
-  const cars = await listUserCars(userId, versionTag)
+  await carRepository.touchUnsynced(userId, versionTag, updatedAt)
+  const cars = await carRepository.listByUser(userId, versionTag)
   const unsynced = cars.filter((car) => !car.fencyMemoryId)
   const toSync = unsynced.length > 0 ? unsynced : cars
 
@@ -134,7 +127,7 @@ export async function syncDemoCars(
 
   await mapMemoryIds([...created, ...updated], versionTag)
 
-  if ((await countSyncedUserCars(userId, versionTag)) < DEMO_CAR_CATALOG_SIZE) {
+  if ((await carRepository.countSynced(userId, versionTag)) < DEMO_CAR_CATALOG_SIZE) {
     throw new Error('DemoCar rows were not all assigned a Fency memory id.')
   }
 }
