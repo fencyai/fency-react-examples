@@ -16,6 +16,10 @@ folder. That is why the examples must not share code.
 The guides live in `customers/fency-docs-v2/content/docs/integration/` in the
 Fency workspace (published as the Integration section of the docs site).
 
+The guides embed example code verbatim. Whenever you change an example, update
+the matching guide in the same pass so its snippets, file names, and route
+paths stay identical to the code.
+
 ## Code quality bar
 
 This is a customer-facing public webapp. Customers read this code to learn the
@@ -64,6 +68,9 @@ The repo is organized package-by-feature first, package-by-layer second:
      make. Route-specific helpers live next to their `route.ts`.
    - `db/` — persistence layer (`schema.ts`, `client.ts`, `queries.ts`,
      `migrations/`), only when the feature persists data.
+   Small shared types and Zod schemas used across layers live at the feature
+   root in their own named files (`ChatMessage.ts`,
+   `sessionClientTokenSchema.ts`).
 3. **Dependencies point inward.** `components/` may use `hooks/`; `hooks/`
    call the feature's `api/` routes over HTTP; `api/` may use `db/`. Never
    the other way around, and never sideways into another feature.
