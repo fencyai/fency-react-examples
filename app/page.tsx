@@ -8,21 +8,21 @@ const examples = [
     href: '/streaming-chat-completion',
     title: 'Streaming chat completion',
     description: 'A chat that streams tokens as they are generated.',
-    guide: 'https://fency.ai/docs/integration/streaming-chat-completion',
+    guide: 'https://docs.fency.ai/docs/integration/streaming-chat-completion',
   },
   {
     href: '/structured-chat-completion',
     title: 'Structured chat completion',
     description:
       'Paste free text and extract a JSON record shaped by a Zod schema.',
-    guide: 'https://fency.ai/docs/integration/structured-chat-completion',
+    guide: 'https://docs.fency.ai/docs/integration/structured-chat-completion',
   },
   {
     href: '/explore-memories',
     title: 'Explore memories',
     description:
       'A chat with per-user conversation threads. Each EXPLORE_MEMORIES task is attached after getConversation confirms ownership.',
-    guide: 'https://fency.ai/docs/integration/explore-memories',
+    guide: 'https://docs.fency.ai/docs/integration/explore-memories',
   },
 ]
 
