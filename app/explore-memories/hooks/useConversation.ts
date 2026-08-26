@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { AgentTask } from '@fencyai/react'
+import { z } from 'zod'
 
 export type ExploreConversation = {
   id: string
@@ -14,6 +15,30 @@ export type LatestTurn = {
   query: string
   agentTask: AgentTask
 }
+
+const conversationSchema = z.object({
+  id: z.string(),
+  title: z.string().nullable(),
+  createdAt: z.string().optional(),
+})
+
+const conversationsResponseSchema = z.object({
+  conversations: z.array(conversationSchema),
+})
+
+const createConversationResponseSchema = z.object({
+  conversation: conversationSchema,
+})
+
+const latestTurnResponseSchema = z.object({
+  latestTurn: z
+    .object({
+      id: z.string(),
+      query: z.string(),
+      agentTask: z.custom<AgentTask>(),
+    })
+    .nullable(),
+})
 
 function conversationListTitle(item: ExploreConversation) {
   const title = item.title?.trim()
@@ -59,13 +84,13 @@ export function useConversation() {
     setError(null)
     try {
       const res = await fetch(
-        `/explore-memories/api/latest-turn?conversationId=${encodeURIComponent(conversationId)}`,
+        `/explore-memories/api/get-latest-turn?conversationId=${encodeURIComponent(conversationId)}`,
       )
       if (!res.ok) {
         throw new Error('Failed to load conversation.')
       }
-      const data = (await res.json()) as { latestTurn?: LatestTurn | null }
-      setLatestTurn(data.latestTurn ?? null)
+      const data = latestTurnResponseSchema.parse(await res.json())
+      setLatestTurn(data.latestTurn)
     } catch {
       setLatestTurn(null)
       setError('Failed to load conversation.')
@@ -78,24 +103,18 @@ export function useConversation() {
     let cancelled = false
 
     void (async () => {
-      setIsLoadingList(true)
-      setError(null)
       try {
-        const res = await fetch('/explore-memories/api/conversation', {
+        const res = await fetch('/explore-memories/api/list-conversations', {
           cache: 'no-store',
         })
         if (!res.ok) {
           throw new Error('Failed to load conversations.')
         }
-        const data = (await res.json()) as {
-          conversations?: ExploreConversation[]
-        }
+        const data = conversationsResponseSchema.parse(await res.json())
         if (cancelled) {
           return
         }
-        const items = Array.isArray(data.conversations)
-          ? data.conversations
-          : []
+        const items = data.conversations
         setConversations(items)
         setIsLoadingList(false)
         if (items[0]) {
@@ -145,13 +164,13 @@ export function useConversation() {
 
     setIsCreatingConversation(true)
     try {
-      const res = await fetch('/explore-memories/api/conversation', {
+      const res = await fetch('/explore-memories/api/create-conversation', {
         method: 'POST',
       })
       if (!res.ok) {
         throw new Error('Failed to create conversation')
       }
-      const data = (await res.json()) as { conversation: ExploreConversation }
+      const data = createConversationResponseSchema.parse(await res.json())
       setConversations((prev) => [data.conversation, ...prev])
       setSelectedConversationId(data.conversation.id)
       selectedRef.current = data.conversation.id

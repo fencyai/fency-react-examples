@@ -1,6 +1,6 @@
 'use client'
 
-import { Text } from '@mantine/core'
+import { Center, Loader } from '@mantine/core'
 import type { ReactNode } from 'react'
 import { useSetup } from '../hooks/useSetup'
 import { SetupPanel } from './SetupPanel'
@@ -10,9 +10,9 @@ export function SetupGate({ children }: { children: ReactNode }) {
 
   if (isChecking) {
     return (
-      <Text size="sm" c="dimmed" p="md">
-        Checking car catalog...
-      </Text>
+      <Center p="md" h="100%">
+        <Loader size="sm" />
+      </Center>
     )
   }
 

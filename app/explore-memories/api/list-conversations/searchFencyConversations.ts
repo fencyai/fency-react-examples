@@ -1,10 +1,16 @@
 import 'server-only'
 
-export type FencyConversationItem = {
-  id: string
-  title?: string | null
-  createdAt?: string
-}
+import { z } from 'zod'
+
+const conversationItemSchema = z.object({
+  id: z.string(),
+  title: z.string().nullable().optional(),
+  createdAt: z.string().optional(),
+})
+
+const searchConversationsSchema = z.object({
+  items: z.array(conversationItemSchema).optional(),
+})
 
 export async function searchFencyConversations(userId: string) {
   const secretKey = process.env.FENCY_SECRET_KEY
@@ -27,9 +33,10 @@ export async function searchFencyConversations(userId: string) {
     }),
     cache: 'no-store',
   })
-  const data = (await response.json()) as {
-    items?: FencyConversationItem[]
-    error?: unknown
+  if (!response.ok) {
+    throw new Error('Failed to search conversations')
   }
-  return { ok: response.ok, status: response.status, data }
+
+  const data = searchConversationsSchema.parse(await response.json())
+  return data.items ?? []
 }

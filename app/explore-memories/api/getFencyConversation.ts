@@ -1,5 +1,14 @@
 import 'server-only'
 
+import { z } from 'zod'
+
+const fencyConversationSchema = z.object({
+  id: z.string(),
+  metadata: z.object({
+    userId: z.string(),
+  }),
+})
+
 export async function getFencyConversation(conversationId: string) {
   const secretKey = process.env.FENCY_SECRET_KEY
   if (!secretKey) {
@@ -14,10 +23,12 @@ export async function getFencyConversation(conversationId: string) {
       },
     },
   )
-  const data = (await response.json()) as {
-    id?: string
-    metadata?: { userId?: unknown }
-    error?: unknown
+  if (!response.ok) {
+    return { ok: false as const, status: response.status }
   }
-  return { ok: response.ok, status: response.status, data }
+
+  return {
+    ok: true as const,
+    data: fencyConversationSchema.parse(await response.json()),
+  }
 }

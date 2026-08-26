@@ -1,29 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../auth'
-import { getExampleVersionTag } from '../../../exampleVersionTag'
-import {
-  DEMO_CAR_CATALOG_SIZE,
-  countSyncedUserCars,
-} from '../../db/queries'
+import { DEMO_CAR_CATALOG_SIZE } from '../../db/queries'
+import { getExploreMemoriesVersionTag } from '../../versionTag'
 import { ensureDemoCarMemoryType } from './ensureDemoCarMemoryType'
 import { syncDemoCars } from './syncDemoCars'
-
-export const dynamic = 'force-dynamic'
-
-export async function GET() {
-  const userId = await getAuthorizedUserId()
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const versionTag = getExampleVersionTag('explore-memories')
-  const synced = await countSyncedUserCars(userId, versionTag)
-  return NextResponse.json({
-    ready: synced >= DEMO_CAR_CATALOG_SIZE,
-    syncedCars: synced,
-    versionTag,
-  })
-}
 
 export async function POST() {
   const userId = await getAuthorizedUserId()
@@ -32,7 +12,7 @@ export async function POST() {
   }
 
   try {
-    const versionTag = getExampleVersionTag('explore-memories')
+    const versionTag = getExploreMemoriesVersionTag()
     const memoryTypeId = await ensureDemoCarMemoryType()
     await syncDemoCars(userId, memoryTypeId, versionTag)
     return NextResponse.json({
@@ -42,7 +22,6 @@ export async function POST() {
       versionTag,
     })
   } catch (error) {
-    console.error('Explore memories setup failed:', error)
     const message =
       error instanceof Error ? error.message : 'Failed to create the car catalog.'
     return NextResponse.json({ error: message }, { status: 502 })

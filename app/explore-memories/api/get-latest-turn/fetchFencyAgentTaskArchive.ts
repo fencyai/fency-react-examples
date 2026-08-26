@@ -1,16 +1,12 @@
 import 'server-only'
 
-async function readJson(response: Response): Promise<unknown> {
-  const text = await response.text()
-  if (!text) {
-    return {}
-  }
-  try {
-    return JSON.parse(text) as unknown
-  } catch {
-    return { raw: text }
-  }
-}
+import { z } from 'zod'
+import { sessionClientTokenSchema } from '../../sessionClientTokenSchema'
+
+const downloadLinkSchema = z.object({
+  downloadLink: z.string(),
+  query: z.string().nullable().optional(),
+})
 
 export async function fetchFencyAgentTaskArchive(
   agentTaskId: string,
@@ -35,15 +31,14 @@ export async function fetchFencyAgentTaskArchive(
       getAgentTaskResponse: { agentTaskId },
     }),
   })
-  const sessionData = (await readJson(sessionResponse)) as {
-    clientToken?: string
-    error?: unknown
-  }
-  if (!sessionResponse.ok || typeof sessionData.clientToken !== 'string') {
+  if (!sessionResponse.ok) {
     throw new Error(
       `Fency session for agent task response failed: ${sessionResponse.status}`,
     )
   }
+  const { clientToken } = sessionClientTokenSchema.parse(
+    await sessionResponse.json(),
+  )
 
   const linkResponse = await fetch(
     'https://api.fency.ai/pub/ct/agent-task-response/download-link',
@@ -53,21 +48,17 @@ export async function fetchFencyAgentTaskArchive(
         'Content-Type': 'application/json',
         Origin: origin,
         'X-Fency-Publishable-Key': publishableKey,
-        'X-Fency-Client-Token': sessionData.clientToken,
+        'X-Fency-Client-Token': clientToken,
       },
       body: JSON.stringify({ agentTaskId }),
     },
   )
-  const linkData = (await linkResponse.json()) as {
-    downloadLink?: string
-    query?: string | null
-    error?: unknown
-  }
-  if (!linkResponse.ok || typeof linkData.downloadLink !== 'string') {
+  if (!linkResponse.ok) {
     throw new Error(
       `Fency agent task response download-link failed: ${linkResponse.status}`,
     )
   }
+  const linkData = downloadLinkSchema.parse(await linkResponse.json())
 
   const archiveResponse = await fetch(linkData.downloadLink)
   if (!archiveResponse.ok) {
@@ -78,6 +69,6 @@ export async function fetchFencyAgentTaskArchive(
 
   return {
     query: linkData.query ?? null,
-    archive: await readJson(archiveResponse),
+    archive: await archiveResponse.json(),
   }
 }

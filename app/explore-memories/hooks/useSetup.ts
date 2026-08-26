@@ -1,6 +1,16 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { z } from 'zod'
+
+const setupStatusSchema = z.object({
+  ready: z.boolean(),
+})
+
+const setupResultSchema = z.object({
+  ready: z.boolean().optional(),
+  error: z.string().optional(),
+})
 
 export function useSetup() {
   const [isChecking, setIsChecking] = useState(true)
@@ -8,41 +18,46 @@ export function useSetup() {
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const checkSetup = useCallback(async () => {
-    setIsChecking(true)
-    setError(null)
-    try {
-      const res = await fetch('/explore-memories/api/setup', {
-        cache: 'no-store',
-      })
-      if (!res.ok) {
-        throw new Error('Failed to check catalog setup.')
+  useEffect(() => {
+    let cancelled = false
+
+    void (async () => {
+      try {
+        const res = await fetch('/explore-memories/api/get-setup-status', {
+          cache: 'no-store',
+        })
+        if (!res.ok) {
+          throw new Error('Failed to check catalog setup.')
+        }
+        const { ready } = setupStatusSchema.parse(await res.json())
+        if (!cancelled) {
+          setIsReady(ready)
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Failed to check catalog setup.')
+          setIsReady(false)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsChecking(false)
+        }
       }
-      const data = (await res.json()) as { ready?: boolean }
-      setIsReady(Boolean(data.ready))
-    } catch {
-      setError('Failed to check catalog setup.')
-      setIsReady(false)
-    } finally {
-      setIsChecking(false)
+    })()
+
+    return () => {
+      cancelled = true
     }
   }, [])
 
-  useEffect(() => {
-    void checkSetup()
-  }, [checkSetup])
-
-  const createCatalog = useCallback(async () => {
+  async function createCatalog() {
     setIsCreating(true)
     setError(null)
     try {
-      const res = await fetch('/explore-memories/api/setup', {
+      const res = await fetch('/explore-memories/api/create-car-catalog', {
         method: 'POST',
       })
-      const data = (await res.json().catch(() => ({}))) as {
-        ready?: boolean
-        error?: string
-      }
+      const data = setupResultSchema.parse(await res.json())
       if (!res.ok) {
         throw new Error(data.error ?? 'Failed to create the car catalog.')
       }
@@ -55,7 +70,7 @@ export function useSetup() {
     } finally {
       setIsCreating(false)
     }
-  }, [])
+  }
 
   return {
     isChecking,

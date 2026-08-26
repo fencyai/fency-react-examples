@@ -1,5 +1,7 @@
 import 'server-only'
 
+import type { z } from 'zod'
+
 export function fencySecretKey() {
   const secretKey = process.env.FENCY_SECRET_KEY
   if (!secretKey) {
@@ -10,8 +12,9 @@ export function fencySecretKey() {
 
 export async function fencyJson<T>(
   path: string,
+  schema: z.ZodType<T>,
   init?: RequestInit,
-): Promise<{ ok: boolean; status: number; data: T }> {
+) {
   const response = await fetch(`https://api.fency.ai${path}`, {
     ...init,
     headers: {
@@ -21,6 +24,6 @@ export async function fencyJson<T>(
     },
     cache: 'no-store',
   })
-  const data = (await response.json()) as T
+  const data = schema.parse(await response.json())
   return { ok: response.ok, status: response.status, data }
 }

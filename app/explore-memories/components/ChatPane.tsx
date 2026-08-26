@@ -1,8 +1,8 @@
 'use client'
 
-import { Alert, Stack, Text } from '@mantine/core'
-import { AgentTaskProgress, useAgentTasks } from '@fencyai/react'
-import { useEffect, useRef, useState } from 'react'
+import { Alert, Center, Loader, Stack, Text } from '@mantine/core'
+import { AgentTaskProgress } from '@fencyai/react'
+import { useExploreChat } from '../hooks/useExploreChat'
 import type { LatestTurn } from '../hooks/useConversation'
 import { ChatComposer } from './ChatComposer'
 import { UserQueryBubble } from './UserQueryBubble'
@@ -28,89 +28,19 @@ export function ChatPane({
   onEnsureConversation: () => Promise<{ id: string }>
   onFirstMessage: (conversationId: string, query: string) => void
 }) {
-  const [input, setInput] = useState('')
-  const [liveQuery, setLiveQuery] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { latest, createAgentTask } = useAgentTasks({})
-  const previousConversationId = useRef(selectedConversationId)
-
-  useEffect(() => {
-    const previousId = previousConversationId.current
-    previousConversationId.current = selectedConversationId
-    if (previousId !== null && previousId !== selectedConversationId) {
-      setLiveQuery(null)
-    }
-  }, [selectedConversationId])
+  const { isSubmitting, displayedQuery, displayedTask, sendQuery } =
+    useExploreChat({
+      selectedConversationId,
+      latestTurn,
+      onEnsureConversation,
+      onFirstMessage,
+    })
 
   const inputDisabled =
     isSubmitting ||
     isCreatingConversation ||
     isLoadingTurn ||
     (!isDraftNewChat && !conversationReady)
-
-  const liveExploreTask =
-    liveQuery && latest && latest.params.type === 'ExploreMemories'
-      ? latest
-      : null
-
-  const displayedQuery = liveQuery ?? latestTurn?.query
-  const displayedTask = liveExploreTask ?? latestTurn?.agentTask ?? null
-
-  async function handleSubmit() {
-    const trimmed = input.trim()
-    if (!trimmed || inputDisabled) {
-      return
-    }
-
-    const hadHistory = latestTurn !== null
-    setIsSubmitting(true)
-    setLiveQuery(trimmed)
-    setInput('')
-
-    try {
-      const current = await onEnsureConversation()
-      if (!hadHistory) {
-        onFirstMessage(current.id, trimmed)
-      }
-
-      const response = await createAgentTask(
-        {
-          type: 'ExploreMemories',
-          query: trimmed,
-          model: 'anthropic/claude-sonnet-4.6',
-        },
-        {
-          fetchCreateAgentTaskClientToken: async () => {
-            const res = await fetch('/explore-memories/api/agent-task-session', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                conversationId: current.id,
-              }),
-            })
-            if (!res.ok) {
-              throw new Error('Failed to create agent task session')
-            }
-            const data = (await res.json()) as { clientToken?: string }
-            if (!data.clientToken) {
-              throw new Error('No clientToken in session response')
-            }
-            return { clientToken: data.clientToken }
-          },
-        },
-      )
-
-      if (response.type === 'success' && !hadHistory) {
-        onFirstMessage(current.id, trimmed)
-      }
-    } catch {
-      // Task errors also surface on latest.error
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
 
   return (
     <Stack h="100%" gap={0}>
@@ -121,18 +51,16 @@ export function ChatPane({
       >
         {error ? <Alert color="red">{error}</Alert> : null}
         {isLoadingTurn ? (
-          <Text size="sm" c="dimmed">
-            Loading conversation...
-          </Text>
+          <Center py="md">
+            <Loader size="sm" />
+          </Center>
         ) : displayedQuery ? (
           <>
             <UserQueryBubble query={displayedQuery} />
-            {displayedTask ? (
-              displayedTask.error ? (
-                <Alert color="red">{displayedTask.error.message}</Alert>
-              ) : (
-                <AgentTaskProgress agentTask={displayedTask} />
-              )
+            {displayedTask?.error ? (
+              <Alert color="red">{displayedTask.error.message}</Alert>
+            ) : displayedTask ? (
+              <AgentTaskProgress agentTask={displayedTask} />
             ) : null}
           </>
         ) : (
@@ -149,11 +77,9 @@ export function ChatPane({
         }}
       >
         <ChatComposer
-          value={input}
           disabled={inputDisabled}
           isSubmitting={isSubmitting}
-          onChange={setInput}
-          onSubmit={() => void handleSubmit()}
+          onSend={sendQuery}
         />
       </div>
     </Stack>

@@ -1,4 +1,4 @@
-import { Button, Stack, Text, Title } from '@mantine/core'
+import { Button, Center, Loader, Stack, Text } from '@mantine/core'
 import type { ExploreConversation } from '../hooks/useConversation'
 import { ConversationNavItem } from './ConversationNavItem'
 
@@ -19,17 +19,14 @@ export function ConversationNavbar({
 }) {
   return (
     <Stack gap="sm" h="100%" p="sm" style={{ overflow: 'hidden' }}>
-      <Title order={2} size="h6">
-        Explore memories
-      </Title>
       <Button variant="default" onClick={onStartNewChat}>
         New chat
       </Button>
       <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
         {isLoadingList ? (
-          <Text size="sm" c="dimmed" px="xs">
-            Loading chats...
-          </Text>
+          <Center py="md">
+            <Loader size="sm" />
+          </Center>
         ) : conversations.length === 0 ? (
           <Text size="sm" c="dimmed" px="xs">
             No chats yet.
