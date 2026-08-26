@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { getAuthorizedUserId } from '../../../auth'
-import { DEMO_CAR_CATALOG_SIZE } from '../../db/queries'
-import { getExploreMemoriesVersionTag } from '../../versionTag'
+import { getAuthorizedUserId } from '../../../../auth'
+import { DEMO_CAR_CATALOG_SIZE } from '../../../db/queries'
+import { getExploreMemoriesVersionTag } from '../../../versionTag'
 import { ensureDemoCarMemoryType } from './ensureDemoCarMemoryType'
 import { syncDemoCars } from './syncDemoCars'
 

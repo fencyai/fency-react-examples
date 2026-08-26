@@ -30,14 +30,21 @@ const createConversationResponseSchema = z.object({
   conversation: conversationSchema,
 })
 
-const latestTurnResponseSchema = z.object({
-  latestTurn: z
-    .object({
+const listAgentTasksResponseSchema = z.object({
+  agentTasks: z.array(
+    z.object({
       id: z.string(),
-      query: z.string(),
-      agentTask: z.custom<AgentTask>(),
-    })
-    .nullable(),
+      taskType: z.string().optional(),
+    }),
+  ),
+})
+
+const agentTaskResponseSchema = z.object({
+  turn: z.object({
+    id: z.string(),
+    query: z.string(),
+    agentTask: z.custom<AgentTask>(),
+  }),
 })
 
 function conversationListTitle(item: ExploreConversation) {
@@ -83,14 +90,31 @@ export function useConversation() {
     setIsLoadingTurn(true)
     setError(null)
     try {
-      const res = await fetch(
-        `/explore-memories/api/get-latest-turn?conversationId=${encodeURIComponent(conversationId)}`,
+      const listRes = await fetch(
+        `/explore-memories/api/list-agent-tasks?conversationId=${encodeURIComponent(conversationId)}`,
       )
-      if (!res.ok) {
+      if (!listRes.ok) {
         throw new Error('Failed to load conversation.')
       }
-      const data = latestTurnResponseSchema.parse(await res.json())
-      setLatestTurn(data.latestTurn)
+      const { agentTasks } = listAgentTasksResponseSchema.parse(
+        await listRes.json(),
+      )
+      const latestTask = agentTasks
+        .filter((task) => task.taskType === 'EXPLORE_MEMORIES')
+        .at(-1)
+      if (!latestTask) {
+        setLatestTurn(null)
+        return
+      }
+
+      const turnRes = await fetch(
+        `/explore-memories/api/get-agent-task-response?agentTaskId=${encodeURIComponent(latestTask.id)}`,
+      )
+      if (!turnRes.ok) {
+        throw new Error('Failed to load conversation.')
+      }
+      const { turn } = agentTaskResponseSchema.parse(await turnRes.json())
+      setLatestTurn(turn)
     } catch {
       setLatestTurn(null)
       setError('Failed to load conversation.')

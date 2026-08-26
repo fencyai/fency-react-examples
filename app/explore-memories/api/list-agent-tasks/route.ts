@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../auth'
 import { getFencyConversation } from '../getFencyConversation'
-import { buildConversationTurnFromArchive } from './buildConversationTurnFromArchive'
 import { listFencyAgentTasks } from './listFencyAgentTasks'
-import { resolveRequestOrigin } from './resolveRequestOrigin'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   const userId = await getAuthorizedUserId()
@@ -32,17 +32,10 @@ export async function GET(request: Request) {
   }
 
   const tasks = await listFencyAgentTasks(conversationId)
-  const exploreTasks = (tasks.items ?? []).filter(
-    (task) => task.taskType === 'EXPLORE_MEMORIES',
-  )
-  const latestTask = exploreTasks[exploreTasks.length - 1]
-  if (!latestTask) {
-    return NextResponse.json({ latestTurn: null })
-  }
-
-  const latestTurn = await buildConversationTurnFromArchive(
-    latestTask.id,
-    resolveRequestOrigin(request),
-  )
-  return NextResponse.json({ latestTurn })
+  return NextResponse.json({
+    agentTasks: (tasks.items ?? []).map((task) => ({
+      id: task.id,
+      taskType: task.taskType,
+    })),
+  })
 }

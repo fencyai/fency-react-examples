@@ -4,7 +4,7 @@ import {
   DEMO_CAR_MEMORY_TYPE_NAME,
   getDemoCarMemoryType,
   saveDemoCarMemoryType,
-} from '../../db/queries'
+} from '../../../db/queries'
 import { createFencyMemoryType } from './createFencyMemoryType'
 import { listFencyMemoryTypes } from './listFencyMemoryTypes'
 

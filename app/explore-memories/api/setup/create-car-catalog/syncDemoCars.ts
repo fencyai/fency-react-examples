@@ -8,7 +8,7 @@ import {
   listUserCars,
   setCarMemoryIds,
   wipeStaleUserCars,
-} from '../../db/queries'
+} from '../../../db/queries'
 import {
   buildDemoCarCatalog,
   catalogIdentityFromMemoryId,

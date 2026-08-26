@@ -23,7 +23,7 @@ export function useSetup() {
 
     void (async () => {
       try {
-        const res = await fetch('/explore-memories/api/get-setup-status', {
+        const res = await fetch('/explore-memories/api/setup/get-setup-status', {
           cache: 'no-store',
         })
         if (!res.ok) {
@@ -54,7 +54,7 @@ export function useSetup() {
     setIsCreating(true)
     setError(null)
     try {
-      const res = await fetch('/explore-memories/api/create-car-catalog', {
+      const res = await fetch('/explore-memories/api/setup/create-car-catalog', {
         method: 'POST',
       })
       const data = setupResultSchema.parse(await res.json())
