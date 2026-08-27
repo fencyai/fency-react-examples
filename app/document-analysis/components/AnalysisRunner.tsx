@@ -67,11 +67,17 @@ export function AnalysisRunner({
             ? 'Extracting...'
             : 'Analyze document'}
       </Button>
+      {pipelineError ? <Alert color="red">{pipelineError}</Alert> : null}
+      {extracted ? (
+        <ExtractedDataPointTable
+          dataPoints={dataPoints}
+          extracted={extracted}
+        />
+      ) : null}
       {isStructuring && structuringTask ? (
         <AgentTaskProgress agentTask={structuringTask} />
       ) : null}
-      {pipelineError ? <Alert color="red">{pipelineError}</Alert> : null}
-      {dataPointSearchesWithTasks.map((search) => (
+      {[...dataPointSearchesWithTasks].reverse().map((search) => (
         <DataPointSearchCard
           key={search.taskKey}
           search={search}
@@ -82,12 +88,6 @@ export function AnalysisRunner({
         search={openSearch}
         onClose={() => setOpenTaskKey(null)}
       />
-      {extracted ? (
-        <ExtractedDataPointTable
-          dataPoints={dataPoints}
-          extracted={extracted}
-        />
-      ) : null}
     </Stack>
   )
 }

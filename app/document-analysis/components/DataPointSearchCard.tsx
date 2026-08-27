@@ -1,19 +1,14 @@
 'use client'
 
-import { Group, Text, UnstyledButton } from '@mantine/core'
+import { CheckIcon, Group, Loader, Text, UnstyledButton } from '@mantine/core'
 import type { DataPointSearchWithTask } from '../dataPointSearch'
 
-function statusLabel(search: DataPointSearchWithTask) {
-  if (!search.task) {
-    return 'Starting'
-  }
-  if (search.task.error) {
-    return 'Failed'
-  }
-  if (search.task.loading) {
-    return 'Searching'
-  }
-  return 'Done'
+function isSearching(search: DataPointSearchWithTask) {
+  return !search.task || search.task.loading
+}
+
+function isDone(search: DataPointSearchWithTask) {
+  return Boolean(search.task && !search.task.error && !search.task.loading)
 }
 
 export function DataPointSearchCard({
@@ -23,6 +18,8 @@ export function DataPointSearchCard({
   search: DataPointSearchWithTask
   onOpen: () => void
 }) {
+  const done = isDone(search)
+
   return (
     <UnstyledButton
       onClick={onOpen}
@@ -31,13 +28,25 @@ export function DataPointSearchCard({
       style={{
         border: '1px solid var(--mantine-color-default-border)',
         borderRadius: 'var(--mantine-radius-lg)',
+        backgroundColor: done
+          ? 'var(--mantine-color-green-0)'
+          : undefined,
       }}
     >
       <Group justify="space-between" wrap="nowrap">
         <Text size="sm">{search.label}</Text>
-        <Text size="sm" c="dimmed">
-          {statusLabel(search)}
-        </Text>
+        {isSearching(search) ? (
+          <Loader size="sm" />
+        ) : done ? (
+          <CheckIcon
+            size={16}
+            style={{ color: 'var(--mantine-color-green-6)' }}
+          />
+        ) : (
+          <Text size="sm" c="dimmed">
+            Failed
+          </Text>
+        )}
       </Group>
     </UnstyledButton>
   )
