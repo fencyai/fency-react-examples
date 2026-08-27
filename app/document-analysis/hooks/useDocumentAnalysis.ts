@@ -17,7 +17,7 @@ import { sessionClientTokenSchema } from '../sessionClientTokenSchema'
 
 async function fetchCreateMemorySearchClientToken(documentId: string) {
   const res = await fetch(
-    '/document-analysis/api/create-agent-task-session',
+    '/document-analysis/api/create-memory-search-agent-task-session',
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
