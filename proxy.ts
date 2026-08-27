@@ -4,11 +4,16 @@ const isProtectedRoute = createRouteMatcher([
   '/streaming-chat-completion(.*)',
   '/structured-chat-completion(.*)',
   '/explore-memories(.*)',
+  '/document-analysis(.*)',
+])
+
+const isFencyWebhook = createRouteMatcher([
+  '/document-analysis/api/fency-webhook',
 ])
 
 export default clerkMiddleware(
   async (auth, req) => {
-    if (isProtectedRoute(req)) {
+    if (isProtectedRoute(req) && !isFencyWebhook(req)) {
       await auth.protect()
     }
   },

@@ -24,6 +24,13 @@ const examples = [
       'A chat with per-user conversation threads. Each EXPLORE_MEMORIES task is attached after getConversation confirms ownership.',
     guide: 'https://docs.fency.ai/docs/integration/explore-memories',
   },
+  {
+    href: '/document-analysis',
+    title: 'Document analysis',
+    description:
+      'Upload a PDF, wait for the memory.updated webhook, then extract typed data points with MemorySearch.',
+    guide: 'https://docs.fency.ai/docs/integration/document-analysis',
+  },
 ]
 
 export default function HomePage() {

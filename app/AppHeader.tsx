@@ -54,6 +54,14 @@ export function AppHeader() {
           >
             Explore memories
           </Anchor>
+          <Anchor
+            component={Link}
+            href="/document-analysis"
+            c="dimmed"
+            underline="never"
+          >
+            Document analysis
+          </Anchor>
         </Group>
         <Group gap="sm">
           <Show when="signed-out">

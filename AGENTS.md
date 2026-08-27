@@ -12,6 +12,7 @@ folder. That is why the examples must not share code.
 | `app/streaming-chat-completion/` | `/docs/integration/streaming-chat-completion` |
 | `app/structured-chat-completion/` | `/docs/integration/structured-chat-completion` |
 | `app/explore-memories/` | `/docs/integration/explore-memories` |
+| `app/document-analysis/` | `/docs/integration/document-analysis` |
 
 The guides live in `customers/fency-docs-v2/content/docs/integration/` in the
 Fency workspace (published as the Integration section of the docs site).
@@ -40,8 +41,9 @@ The repo is organized package-by-feature first, package-by-layer second:
    - `hooks/` — client-side state and orchestration layer.
    - `api/` — server layer: route handlers plus the Fency API calls they
      make. Route-specific helpers live next to their `route.ts`.
-   - `db/` — persistence layer (`schema.ts`, `client.ts`, `queries.ts`,
-     `migrations/`), only when the feature persists data.
+   - `db/` — persistence layer (`*Table.ts`, `client.ts`, `*Repository.ts`),
+     only when the feature persists data. SQL migrations live in the shared
+     `drizzle/` folder at the repo root.
    Small shared types and Zod schemas used across layers live at the feature
    root in their own named files (`ChatMessage.ts`,
    `sessionClientTokenSchema.ts`).
@@ -120,8 +122,9 @@ and must stay that way:
    `hooks/` folder only when that example needs hooks. Add `db/schema.ts`,
    `db/client.ts`, and `db/queries.ts` only if the example persists memory
    types or memories.
-2. If it persists, prefix every table name with the slug and add a Drizzle
-   config when that example is introduced.
+2. If it persists, prefix every table name with the slug and add `*Table.ts`
+   files under that example's `db/`. Generate the SQL into the shared
+   `drizzle/` folder with `npm run db:generate`.
 3. Add a card on `app/page.tsx` and a link in `app/AppHeader.tsx`. Protect the
    new route tree in `proxy.ts`.
 4. Add a row to the mapping table in this file.

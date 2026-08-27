@@ -17,6 +17,7 @@ FENCY_SECRET_KEY=sk_...
 NEXT_PUBLIC_FENCY_PUBLISHABLE_KEY=pk_...
 DATABASE_URL=postgresql://fency:fency@127.0.0.1:5433/fency_react_examples
 EXPLORE_MEMORIES_VERSION_TAG=explore_memories_local_v1
+DOCUMENT_ANALYSIS_WEBHOOK_SECRET=whsec_...
 ```
 
 Explore Memories versions its DemoCar catalog with
@@ -55,8 +56,21 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). Sign up from the header,
-then open an example. The landing page is public; the three examples require
+then open an example. The landing page is public; the examples require
 sign-in.
+
+Document analysis waits for a Fency `memory.updated` webhook after each PDF
+upload. Fency cannot reach `localhost`, so expose the app with a tunnel and
+register that URL in the Fency dashboard:
+
+```bash
+cloudflared tunnel --url http://localhost:3000
+```
+
+Create a webhook at [app.fency.ai](https://app.fency.ai) pointing at
+`https://<tunnel-host>/document-analysis/api/fency-webhook`. Copy the
+generated secret into `DOCUMENT_ANALYSIS_WEBHOOK_SECRET`. The webhook route
+is public; every other `/document-analysis` path requires sign-in.
 
 In the [Clerk dashboard](https://dashboard.clerk.com), enable **Email**,
 **Password**, and **Google** as sign-in methods.
