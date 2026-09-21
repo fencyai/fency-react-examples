@@ -1,4 +1,4 @@
-import { Button, Center, Loader, Stack, Text } from '@mantine/core'
+import { Badge, Button, Center, Loader, Stack, Text, Title } from '@mantine/core'
 import type { Conversation } from '../hooks/useConversation'
 import { ConversationNavItem } from './ConversationNavItem'
 
@@ -19,6 +19,14 @@ export function ConversationNavbar({
 }) {
   return (
     <Stack gap="sm" h="100%" p="sm" style={{ overflow: 'hidden' }}>
+      <div>
+        <Badge size="sm" variant="light" color="red" mb={4}>
+          Advanced
+        </Badge>
+        <Title order={1} size="h5">
+          Data exploration
+        </Title>
+      </div>
       <Button onClick={onStartNewChat}>
         New chat
       </Button>

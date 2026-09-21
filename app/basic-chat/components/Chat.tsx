@@ -1,6 +1,6 @@
 'use client'
 
-import { Stack, Text, Title } from '@mantine/core'
+import { Badge, Stack, Text, Title } from '@mantine/core'
 import { useEffect, useRef } from 'react'
 import { useBasicChat } from '../hooks/useBasicChat'
 import { ChatComposer } from './ChatComposer'
@@ -17,6 +17,9 @@ export function Chat() {
   return (
     <div className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col">
       <div className="px-4 py-3">
+        <Badge size="sm" variant="light" color="green" mb={4}>
+          Basic
+        </Badge>
         <Title order={1} size="h4">
           Basic chat
         </Title>

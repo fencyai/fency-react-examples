@@ -110,6 +110,8 @@ and must stay that way:
 - `app/layout.tsx`
 - `app/AppHeader.tsx`
 - `app/page.tsx`
+- `app/examplesCatalog.ts`
+- `app/DifficultyBadge.tsx`
 - `app/globals.css`
 - `app/auth.ts`
 - `app/sign-in/`

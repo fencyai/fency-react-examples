@@ -6,24 +6,24 @@ import {
   SignUpButton,
   UserButton,
 } from '@clerk/nextjs'
-import { Button, Group, Select } from '@mantine/core'
+import {
+  Button,
+  Combobox,
+  Group,
+  InputBase,
+  Text,
+  useCombobox,
+} from '@mantine/core'
 import { usePathname, useRouter } from 'next/navigation'
-
-const examples = [
-  { value: '/streaming-response', label: 'Streaming response' },
-  { value: '/json-response', label: 'JSON response' },
-  { value: '/basic-chat', label: 'Basic chat' },
-  { value: '/json-extraction', label: 'JSON extraction' },
-  { value: '/document-json-extraction', label: 'Document JSON extraction' },
-  { value: '/data-exploration', label: 'Data exploration' },
-] as const
+import { DifficultyBadge } from './DifficultyBadge'
+import { examplesCatalog } from './examplesCatalog'
 
 function pickerValueFromPath(pathname: string) {
   return (
-    examples.find(
+    examplesCatalog.find(
       (example) =>
-        pathname === example.value || pathname.startsWith(`${example.value}/`),
-    )?.value ?? '/'
+        pathname === example.href || pathname.startsWith(`${example.href}/`),
+    )?.href ?? '/'
   )
 }
 
@@ -31,6 +31,12 @@ export function AppHeader() {
   const pathname = usePathname()
   const router = useRouter()
   const selected = pickerValueFromPath(pathname)
+  const selectedExample = examplesCatalog.find(
+    (example) => example.href === selected,
+  )
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  })
 
   return (
     <header className="shrink-0 border-b border-(--border) bg-(--card)">
@@ -42,19 +48,49 @@ export function AppHeader() {
         wrap="wrap"
         justify="space-between"
       >
-        <Select
-          aria-label="Example"
-          size="sm"
-          w={260}
-          data={[{ value: '/', label: 'Home' }, ...examples]}
-          value={selected}
-          allowDeselect={false}
-          onChange={(href) => {
-            if (href) {
-              router.push(href)
-            }
+        <Combobox
+          store={combobox}
+          onOptionSubmit={(href) => {
+            router.push(href)
+            combobox.closeDropdown()
           }}
-        />
+        >
+          <Combobox.Target>
+            <InputBase
+              component="button"
+              type="button"
+              pointer
+              size="sm"
+              w={320}
+              aria-label="Example"
+              rightSection={<Combobox.Chevron />}
+              rightSectionPointerEvents="none"
+              onClick={() => combobox.toggleDropdown()}
+            >
+              <Group gap="xs" wrap="nowrap" justify="space-between">
+                <Text size="sm" truncate>
+                  {selectedExample?.title ?? 'Home'}
+                </Text>
+                {selectedExample ? (
+                  <DifficultyBadge level={selectedExample.difficulty} size="xs" />
+                ) : null}
+              </Group>
+            </InputBase>
+          </Combobox.Target>
+          <Combobox.Dropdown>
+            <Combobox.Options>
+              <Combobox.Option value="/">Home</Combobox.Option>
+              {examplesCatalog.map((example) => (
+                <Combobox.Option key={example.href} value={example.href}>
+                  <Group gap="xs" wrap="nowrap" justify="space-between">
+                    <Text size="sm">{example.title}</Text>
+                    <DifficultyBadge level={example.difficulty} size="xs" />
+                  </Group>
+                </Combobox.Option>
+              ))}
+            </Combobox.Options>
+          </Combobox.Dropdown>
+        </Combobox>
         <Group gap="sm">
           <Show when="signed-out">
             <SignInButton>

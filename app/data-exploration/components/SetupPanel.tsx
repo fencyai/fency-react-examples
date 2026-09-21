@@ -1,4 +1,4 @@
-import { Alert, Button, Stack, Text, Title } from '@mantine/core'
+import { Alert, Badge, Button, Stack, Text, Title } from '@mantine/core'
 
 export function SetupPanel({
   isCreating,
@@ -21,6 +21,9 @@ export function SetupPanel({
         borderRadius: 'var(--mantine-radius-md)',
       }}
     >
+      <Badge size="sm" variant="light" color="red">
+        Advanced
+      </Badge>
       <Title order={2} size="h4">
         Set up data exploration
       </Title>

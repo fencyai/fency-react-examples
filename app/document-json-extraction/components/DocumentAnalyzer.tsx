@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, Card, Stack, Text, Title } from '@mantine/core'
+import { Alert, Badge, Card, Stack, Text, Title } from '@mantine/core'
 import { useState } from 'react'
 import type { AnalyzedDocument } from '../analyzedDocument'
 import { useDataPoints } from '../hooks/useDataPoints'
@@ -43,6 +43,9 @@ export function DocumentAnalyzer() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6">
       <div>
+        <Badge size="sm" variant="light" color="yellow" mb={4}>
+          Intermediate
+        </Badge>
         <Title order={1} size="h4">
           Document JSON extraction
         </Title>

@@ -2,46 +2,8 @@
 
 import { Anchor, Button, Card, Group, SimpleGrid, Text, Title } from '@mantine/core'
 import Link from 'next/link'
-
-const examples = [
-  {
-    href: '/streaming-response',
-    title: 'Streaming response',
-    description: 'One prompt. The reply streams in as it is generated.',
-    guide: 'https://docs.fency.ai/docs/integration/streaming-response',
-  },
-  {
-    href: '/json-response',
-    title: 'JSON response',
-    description:
-      'One prompt. The reply is a JSON object with a string, a boolean, and a number.',
-    guide: 'https://docs.fency.ai/docs/integration/json-response',
-  },
-  {
-    href: '/basic-chat',
-    title: 'Basic chat',
-    description: 'A multi-turn chat. Each reply streams in.',
-    guide: 'https://docs.fency.ai/docs/integration/basic-chat',
-  },
-  {
-    href: '/json-extraction',
-    title: 'JSON extraction',
-    description: 'Paste free text and get a typed record back.',
-    guide: 'https://docs.fency.ai/docs/integration/json-extraction',
-  },
-  {
-    href: '/document-json-extraction',
-    title: 'Document JSON extraction',
-    description: 'Upload a PDF and pull typed fields out of it.',
-    guide: 'https://docs.fency.ai/docs/integration/document-json-extraction',
-  },
-  {
-    href: '/data-exploration',
-    title: 'Data exploration',
-    description: 'Ask questions over a per-user catalog.',
-    guide: 'https://docs.fency.ai/docs/integration/data-exploration',
-  },
-]
+import { DifficultyBadge } from './DifficultyBadge'
+import { examplesCatalog } from './examplesCatalog'
 
 export default function HomePage() {
   return (
@@ -54,7 +16,7 @@ export default function HomePage() {
         inspecting that folder.
       </Text>
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mt="xl">
-        {examples.map((example) => (
+        {examplesCatalog.map((example) => (
           <Card
             key={example.href}
             withBorder
@@ -62,7 +24,8 @@ export default function HomePage() {
             radius="md"
             className="flex h-full flex-col transition-shadow hover:shadow-sm"
           >
-            <Title order={2} size="h4">
+            <DifficultyBadge level={example.difficulty} />
+            <Title order={2} size="h4" mt="xs">
               {example.title}
             </Title>
             <Text size="sm" c="dimmed" mt="xs" mb="lg">

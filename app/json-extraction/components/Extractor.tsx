@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, Card, Text, Title } from '@mantine/core'
+import { Alert, Badge, Card, Text, Title } from '@mantine/core'
 import { AgentTaskProgress } from '@fencyai/react'
 import { useJsonExtraction } from '../hooks/useJsonExtraction'
 import { ExtractionForm } from './ExtractionForm'
@@ -14,6 +14,9 @@ export function Extractor() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6">
       <div>
+        <Badge size="sm" variant="light" color="green" mb={4}>
+          Basic
+        </Badge>
         <Title order={1} size="h4">
           JSON extraction
         </Title>
