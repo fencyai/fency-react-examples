@@ -25,9 +25,10 @@ export function ChatComposer({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex shrink-0 gap-2 border-t border-(--border) bg-(--card) p-4"
+      className="flex shrink-0 gap-3 border-t border-(--border) bg-(--card) px-4 py-4"
     >
       <TextInput
+        radius="md"
         style={{ flex: 1 }}
         value={input}
         onChange={(event) => setInput(event.currentTarget.value)}
@@ -36,7 +37,7 @@ export function ChatComposer({
       />
       <Button
         type="submit"
-        variant="default"
+        radius="md"
         disabled={isSubmitting || !input.trim()}
       >
         Send

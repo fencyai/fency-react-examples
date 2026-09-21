@@ -27,6 +27,7 @@ export function ExtractionForm({
     <form onSubmit={handleSubmit}>
       <Stack gap="sm">
         <Textarea
+          radius="md"
           value={input}
           onChange={(event) => setInput(event.currentTarget.value)}
           rows={6}
@@ -34,7 +35,6 @@ export function ExtractionForm({
         />
         <Button
           type="submit"
-          variant="default"
           disabled={isSubmitting || !input.trim()}
           style={{ alignSelf: 'flex-start' }}
         >

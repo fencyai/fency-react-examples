@@ -7,7 +7,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core'
 
-export const catTable = pgTable(
+export const carTable = pgTable(
   'explore_memories_cars',
   {
     id: uuid('id').defaultRandom().primaryKey(),

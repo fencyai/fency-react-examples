@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, Text, Title } from '@mantine/core'
+import { Alert, Card, Text, Title } from '@mantine/core'
 import { AgentTaskProgress } from '@fencyai/react'
 import { useStructuredExtraction } from '../hooks/useStructuredExtraction'
 import { ExtractionForm } from './ExtractionForm'
@@ -21,12 +21,21 @@ export function Extractor() {
           Paste free text. Fency returns JSON that matches the Zod schema.
           There are no incremental text events, only a completed result.
         </Text>
-        <div className="mt-2">
-          <SchemaPreview />
-        </div>
       </div>
 
-      <ExtractionForm isSubmitting={isSubmitting} onExtract={extract} />
+      <Card withBorder padding="lg" radius="md">
+        <Title order={2} size="h5" mb="sm">
+          Schema
+        </Title>
+        <SchemaPreview />
+      </Card>
+
+      <Card withBorder padding="lg" radius="md">
+        <Title order={2} size="h5" mb="sm">
+          Source text
+        </Title>
+        <ExtractionForm isSubmitting={isSubmitting} onExtract={extract} />
+      </Card>
 
       {latestTask?.error ? (
         <Alert color="red">{latestTask.error.message}</Alert>

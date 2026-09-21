@@ -41,7 +41,6 @@ export function DataPointForm({
         />
       ))}
       <Button
-        variant="default"
         onClick={onAdd}
         disabled={disabled}
         style={{ alignSelf: 'flex-start' }}

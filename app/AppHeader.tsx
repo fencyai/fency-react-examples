@@ -6,10 +6,30 @@ import {
   SignUpButton,
   UserButton,
 } from '@clerk/nextjs'
-import { Anchor, Button, Group } from '@mantine/core'
-import Link from 'next/link'
+import { Button, Group, Select } from '@mantine/core'
+import { usePathname, useRouter } from 'next/navigation'
+
+const examples = [
+  { value: '/streaming-chat-completion', label: 'Streaming chat' },
+  { value: '/structured-chat-completion', label: 'Structured chat' },
+  { value: '/explore-memories', label: 'Explore memories' },
+  { value: '/document-analysis', label: 'Document analysis' },
+] as const
+
+function exampleValueFromPath(pathname: string) {
+  return (
+    examples.find(
+      (example) =>
+        pathname === example.value || pathname.startsWith(`${example.value}/`),
+    )?.value ?? null
+  )
+}
 
 export function AppHeader() {
+  const pathname = usePathname()
+  const router = useRouter()
+  const selectedExample = exampleValueFromPath(pathname)
+
   return (
     <header className="shrink-0 border-b border-(--border) bg-(--card)">
       <Group
@@ -18,51 +38,23 @@ export function AppHeader() {
         py="sm"
         gap="md"
         wrap="wrap"
-        justify="space-between"
+        justify={selectedExample ? 'space-between' : 'flex-end'}
       >
-        <Group gap="md" wrap="wrap">
-          <Anchor
-            component={Link}
-            href="/"
-            fw={600}
-            underline="never"
-            c="inherit"
-          >
-            Fency examples
-          </Anchor>
-          <Anchor
-            component={Link}
-            href="/streaming-chat-completion"
-            c="dimmed"
-            underline="never"
-          >
-            Streaming chat
-          </Anchor>
-          <Anchor
-            component={Link}
-            href="/structured-chat-completion"
-            c="dimmed"
-            underline="never"
-          >
-            Structured chat
-          </Anchor>
-          <Anchor
-            component={Link}
-            href="/explore-memories"
-            c="dimmed"
-            underline="never"
-          >
-            Explore memories
-          </Anchor>
-          <Anchor
-            component={Link}
-            href="/document-analysis"
-            c="dimmed"
-            underline="never"
-          >
-            Document analysis
-          </Anchor>
-        </Group>
+        {selectedExample ? (
+          <Select
+            aria-label="Example"
+            size="sm"
+            w={200}
+            data={examples}
+            value={selectedExample}
+            allowDeselect={false}
+            onChange={(href) => {
+              if (href) {
+                router.push(href)
+              }
+            }}
+          />
+        ) : null}
         <Group gap="sm">
           <Show when="signed-out">
             <SignInButton>

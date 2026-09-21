@@ -17,8 +17,8 @@ export function RecordCard({
   ] as const
 
   return (
-    <Card withBorder padding="md" radius="lg">
-      <Title order={2} size="h6" mb="sm">
+    <Card withBorder padding="md" radius="md">
+      <Title order={2} size="h5" mb="sm">
         {title}
       </Title>
       <dl className="grid grid-cols-[8rem_1fr] gap-x-3 gap-y-1">

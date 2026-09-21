@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getAuthorizedUserId } from '../../../auth'
+import { sessionClientTokenSchema } from '../../sessionClientTokenSchema'
 import { DOCUMENT_MEMORY_TYPE_NAME } from '../../documentAnalysisConstants'
 import { documentRepository } from '../../db/documentRepository'
 import { memoryTypeRepository } from '../../db/memoryTypeRepository'
@@ -63,6 +64,8 @@ export async function POST(request: Request) {
       },
     }),
   })
-  const data = await response.json()
-  return NextResponse.json(data, { status: response.status })
+  if (!response.ok) {
+    throw new Error('Failed to create Fency session.')
+  }
+  return NextResponse.json(sessionClientTokenSchema.parse(await response.json()))
 }

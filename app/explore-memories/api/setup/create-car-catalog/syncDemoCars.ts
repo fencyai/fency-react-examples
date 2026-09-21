@@ -29,20 +29,21 @@ async function mapMemoryIds(memoryIds: string[], versionTag: string) {
     const pages = await Promise.all(chunk.map((id) => getFencyMemory(id)))
     for (const page of pages) {
       if (!page.ok || typeof page.data.id !== 'string') {
-        continue
+        throw new Error('Failed to load a DemoCar memory after sync.')
       }
       const taggedId = page.data.metadata?.id
       if (typeof taggedId !== 'string') {
-        continue
+        throw new Error('DemoCar memory is missing metadata.id.')
       }
       const identity = catalogIdentityFromMemoryId(versionTag, taggedId)
-      if (identity) {
-        mappings.push({
-          identity,
-          versionTag,
-          fencyMemoryId: page.data.id,
-        })
+      if (!identity) {
+        throw new Error('DemoCar memory id did not match the catalog identity.')
       }
+      mappings.push({
+        identity,
+        versionTag,
+        fencyMemoryId: page.data.id,
+      })
     }
   }
 
@@ -111,13 +112,19 @@ export async function syncDemoCars(
         status.data.errorMessage ?? 'DemoCar memory sync failed in Fency.',
       )
     }
-    if (
-      status.data.status === 'COMPLETED' ||
-      status.data.status === 'COMPLETE'
-    ) {
+    if (status.data.status === 'COMPLETED') {
       created = status.data.result?.created ?? []
       updated = status.data.result?.updated ?? []
       break
+    }
+    if (
+      status.data.status !== 'PENDING' &&
+      status.data.status !== 'RUNNING' &&
+      status.data.status !== 'QUEUED'
+    ) {
+      throw new Error(
+        `Unexpected DemoCar memory sync status: ${status.data.status}.`,
+      )
     }
     if (attempt === 59) {
       throw new Error('Timed out waiting for the DemoCar memory sync.')

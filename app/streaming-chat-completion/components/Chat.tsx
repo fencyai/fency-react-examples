@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Group, Text, Title } from '@mantine/core'
+import { Button, Group, Stack, Text, Title } from '@mantine/core'
 import { useEffect, useRef } from 'react'
 import { useStreamingChat } from '../hooks/useStreamingChat'
 import { ChatComposer } from './ChatComposer'
@@ -30,16 +30,23 @@ export function Chat() {
         </Button>
       </Group>
 
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-2">
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {turns.length === 0 ? (
-          <Text size="sm" c="dimmed" ta="center" py="xl">
-            Send a message to start streaming.
-          </Text>
+          <Stack align="center" gap={4} py="xl">
+            <Title order={2} size="h5">
+              Start streaming
+            </Title>
+            <Text size="sm" c="dimmed" ta="center">
+              Send a message to stream tokens as they arrive.
+            </Text>
+          </Stack>
         ) : null}
 
-        {turns.map((turn, index) => (
-          <ChatTurn key={index} turn={turn} />
-        ))}
+        <Stack gap="md">
+          {turns.map((turn, index) => (
+            <ChatTurn key={index} turn={turn} />
+          ))}
+        </Stack>
       </div>
 
       <ChatComposer isSubmitting={isSubmitting} onSend={sendMessage} />

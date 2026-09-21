@@ -10,7 +10,7 @@ export function ExtractedDataPointTable({
   extracted: Record<string, unknown>
 }) {
   return (
-    <Card withBorder padding="md" radius="lg">
+    <Card withBorder padding="md" radius="md">
       <Title order={2} size="h6" mb="sm">
         Extracted data
       </Title>

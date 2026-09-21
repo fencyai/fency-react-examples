@@ -55,7 +55,6 @@ export function AnalysisRunner({
         </Text>
       </div>
       <Button
-        variant="default"
         onClick={onAnalyze}
         disabled={!ready || isRunning || dataPoints.length === 0}
         loading={isRunning}

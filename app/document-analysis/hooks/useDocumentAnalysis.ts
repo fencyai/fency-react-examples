@@ -120,16 +120,14 @@ export function useDocumentAnalysis() {
 
           const terminal = searchResult.response
           if (
-            terminal.taskType === 'MemorySearch' &&
-            terminal.eventType === 'Completed'
+            terminal.taskType !== 'MemorySearch' ||
+            terminal.eventType !== 'Completed'
           ) {
-            aggregated.push(
-              `# ${dataPoint.label}\n${formatMemorySearchSnippets(terminal.response)}`,
-            )
-          } else {
-            setPipelineError('Unexpected MemorySearch outcome.')
-            break
+            throw new Error('Unexpected MemorySearch outcome.')
           }
+          aggregated.push(
+            `# ${dataPoint.label}\n${formatMemorySearchSnippets(terminal.response)}`,
+          )
         }
 
         setIsSearching(false)
@@ -178,8 +176,7 @@ export function useDocumentAnalysis() {
           event.taskType !== 'StructuredChatCompletion' ||
           event.eventType !== 'Completed'
         ) {
-          setPipelineError('Unexpected structured extraction response.')
-          return
+          throw new Error('Unexpected structured extraction response.')
         }
 
         setExtracted(schema.parse(JSON.parse(event.response.jsonResponse)))

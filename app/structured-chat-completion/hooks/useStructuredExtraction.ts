@@ -49,16 +49,17 @@ export function useStructuredExtraction() {
         { fetchCreateAgentTaskClientToken },
       )
 
-      if (
-        response.type === 'success' &&
-        response.response.taskType === 'StructuredChatCompletion'
-      ) {
-        setLatestResult(
-          extractionSchema.parse(
-            JSON.parse(response.response.response.jsonResponse),
-          ),
-        )
+      if (response.type !== 'success') {
+        throw new Error(response.error.message)
       }
+      if (response.response.taskType !== 'StructuredChatCompletion') {
+        throw new Error('Unexpected StructuredChatCompletion outcome.')
+      }
+      setLatestResult(
+        extractionSchema.parse(
+          JSON.parse(response.response.response.jsonResponse),
+        ),
+      )
     } finally {
       setIsSubmitting(false)
     }

@@ -2,24 +2,21 @@ import { Paper, Text } from '@mantine/core'
 import type { ChatMessage } from '../ChatMessage'
 
 export function Bubble({ message }: { message: ChatMessage }) {
-  if (message.role === 'SYSTEM') {
-    return null
+  if (message.role !== 'USER') {
+    throw new Error('Bubble only renders USER messages.')
   }
-  const isUser = message.role === 'USER'
+
   return (
     <Paper
       radius="md"
-      px="sm"
-      py="xs"
-      mb={isUser ? 8 : 16}
-      maw="80%"
-      bg={isUser ? 'blue.6' : 'var(--card)'}
-      c={isUser ? 'white' : undefined}
+      px="md"
+      py="sm"
+      maw="75%"
+      bg="blue.6"
+      c="white"
       style={{
-        marginLeft: isUser ? 'auto' : undefined,
-        marginRight: isUser ? undefined : 'auto',
-        width: isUser ? 'fit-content' : undefined,
-        whiteSpace: isUser ? undefined : 'pre-wrap',
+        marginLeft: 'auto',
+        width: 'fit-content',
       }}
     >
       <Text size="sm" c="inherit">

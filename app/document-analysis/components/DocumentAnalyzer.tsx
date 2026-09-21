@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, Stack, Text, Title } from '@mantine/core'
+import { Alert, Card, Stack, Text, Title } from '@mantine/core'
 import { useState } from 'react'
 import type { AnalyzedDocument } from '../analyzedDocument'
 import { useDataPoints } from '../hooks/useDataPoints'
@@ -41,7 +41,7 @@ export function DocumentAnalyzer() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-6">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6">
       <div>
         <Title order={1} size="h4">
           Document analysis
@@ -52,46 +52,59 @@ export function DocumentAnalyzer() {
         </Text>
       </div>
 
-      <DataPointForm
-        dataPoints={dataPoints}
-        disabled={isRunning}
-        onAdd={addDataPoint}
-        onChange={updateDataPoint}
-        onRemove={removeDataPoint}
-      />
+      <Card withBorder padding="lg" radius="md">
+        <DataPointForm
+          dataPoints={dataPoints}
+          disabled={isRunning}
+          onAdd={addDataPoint}
+          onChange={updateDataPoint}
+          onRemove={removeDataPoint}
+        />
+      </Card>
 
-      <DocumentUploader onUploaded={handleUploaded} onError={setError} />
+      <Card withBorder padding="lg" radius="md">
+        <DocumentUploader onUploaded={handleUploaded} onError={setError} />
+      </Card>
 
       {error ? <Alert color="red">{error}</Alert> : null}
 
-      <DocumentList
-        documents={documents}
-        isLoading={isLoading}
-        selectedId={selectedId}
-        onSelect={handleSelect}
-      />
+      <Card withBorder padding="lg" radius="md">
+        <DocumentList
+          documents={documents}
+          isLoading={isLoading}
+          selectedId={selectedId}
+          onSelect={handleSelect}
+        />
+      </Card>
 
       {selected ? (
-        <AnalysisRunner
-          document={selected}
-          dataPoints={dataPoints}
-          isRunning={isRunning}
-          isSearching={isSearching}
-          isStructuring={isStructuring}
-          pipelineError={pipelineError}
-          dataPointSearchesWithTasks={dataPointSearchesWithTasks}
-          structuringTask={structuringTask}
-          extracted={extracted}
-          onAnalyze={() => {
-            void analyze(selected.id, dataPoints)
-          }}
-        />
+        <Card withBorder padding="lg" radius="md">
+          <AnalysisRunner
+            document={selected}
+            dataPoints={dataPoints}
+            isRunning={isRunning}
+            isSearching={isSearching}
+            isStructuring={isStructuring}
+            pipelineError={pipelineError}
+            dataPointSearchesWithTasks={dataPointSearchesWithTasks}
+            structuringTask={structuringTask}
+            extracted={extracted}
+            onAnalyze={() => {
+              void analyze(selected.id, dataPoints)
+            }}
+          />
+        </Card>
       ) : (
-        <Stack gap={4}>
-          <Text size="sm" c="dimmed">
-            Select a synchronized document to run analysis.
-          </Text>
-        </Stack>
+        <Card withBorder padding="lg" radius="md">
+          <Stack gap={4}>
+            <Title order={2} size="h5">
+              Run analysis
+            </Title>
+            <Text size="sm" c="dimmed">
+              Select a synchronized document to run analysis.
+            </Text>
+          </Stack>
+        </Card>
       )}
     </div>
   )

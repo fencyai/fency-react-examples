@@ -39,13 +39,26 @@ const listAgentTasksResponseSchema = z.object({
   ),
 })
 
-const agentTaskResponseSchema = z.object({
-  turn: z.object({
-    id: z.string(),
-    query: z.string(),
-    agentTask: z.custom<AgentTask>(),
-  }),
+const conversationTurnSchema = z.object({
+  id: z.string(),
+  query: z.string(),
+  agentTask: z.unknown(),
 })
+
+const agentTaskResponseSchema = z.object({
+  turn: conversationTurnSchema,
+})
+
+function latestTurnFromResponse(turn: z.infer<typeof conversationTurnSchema>): LatestTurn {
+  if (turn.agentTask === null || typeof turn.agentTask !== 'object') {
+    throw new Error('Conversation turn is missing agentTask.')
+  }
+  return {
+    id: turn.id,
+    query: turn.query,
+    agentTask: turn.agentTask as AgentTask,
+  }
+}
 
 function conversationListTitle(item: ExploreConversation) {
   const title = item.title?.trim()
@@ -114,7 +127,7 @@ export function useConversation() {
         throw new Error('Failed to load conversation.')
       }
       const { turn } = agentTaskResponseSchema.parse(await turnRes.json())
-      setLatestTurn(turn)
+      setLatestTurn(latestTurnFromResponse(turn))
     } catch {
       setLatestTurn(null)
       setError('Failed to load conversation.')

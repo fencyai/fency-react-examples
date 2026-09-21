@@ -11,7 +11,7 @@ import { AppHeader } from './AppHeader'
 import './globals.css'
 
 const theme = createTheme({
-  defaultRadius: 'lg',
+  defaultRadius: 'md',
 })
 
 export const metadata: Metadata = {

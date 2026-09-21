@@ -28,6 +28,7 @@ export function ChatComposer({
     <form onSubmit={handleSubmit}>
       <Stack gap="sm">
         <Textarea
+          radius="md"
           value={input}
           onChange={(event) => setInput(event.currentTarget.value)}
           rows={3}
@@ -36,7 +37,7 @@ export function ChatComposer({
         />
         <Button
           type="submit"
-          variant="default"
+          radius="md"
           loading={isSubmitting}
           disabled={disabled || !input.trim()}
           style={{ alignSelf: 'flex-end' }}

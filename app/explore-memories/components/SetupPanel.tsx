@@ -18,7 +18,7 @@ export function SetupPanel({
       p="lg"
       style={{
         border: '1px solid var(--mantine-color-default-border)',
-        borderRadius: 'var(--mantine-radius-lg)',
+        borderRadius: 'var(--mantine-radius-md)',
       }}
     >
       <Title order={2} size="h4">

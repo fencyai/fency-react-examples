@@ -19,7 +19,7 @@ export function ConversationNavbar({
 }) {
   return (
     <Stack gap="sm" h="100%" p="sm" style={{ overflow: 'hidden' }}>
-      <Button variant="default" onClick={onStartNewChat}>
+      <Button onClick={onStartNewChat}>
         New chat
       </Button>
       <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>

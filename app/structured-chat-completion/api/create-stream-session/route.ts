@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getAuthorizedUserId } from '../../../auth'
+import { sessionClientTokenSchema } from '../../sessionClientTokenSchema'
 
 export async function POST() {
   const userId = await getAuthorizedUserId()
@@ -20,6 +21,8 @@ export async function POST() {
     },
     body: JSON.stringify({ createStream: {} }),
   })
-  const data = await response.json()
-  return NextResponse.json(data, { status: response.status })
+  if (!response.ok) {
+    throw new Error('Failed to create Fency session.')
+  }
+  return NextResponse.json(sessionClientTokenSchema.parse(await response.json()))
 }

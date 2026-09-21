@@ -12,7 +12,7 @@ export function PdfDropField() {
     <Paper
       withBorder
       p="xl"
-      radius="lg"
+      radius="md"
       style={{ cursor: 'pointer' }}
       {...getRootProps()}
     >

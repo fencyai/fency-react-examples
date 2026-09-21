@@ -37,7 +37,7 @@ export function DocumentListItem({
       p="md"
       style={{
         border: '1px solid var(--mantine-color-default-border)',
-        borderRadius: 'var(--mantine-radius-lg)',
+        borderRadius: 'var(--mantine-radius-md)',
         backgroundColor: ready
           ? 'var(--mantine-color-green-0)'
           : undefined,

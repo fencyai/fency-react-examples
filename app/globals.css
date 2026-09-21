@@ -1,9 +1,6 @@
 @import 'tailwindcss';
 
 :root {
-  --background: var(--mantine-color-body);
-  --foreground: var(--mantine-color-text);
-  --muted: var(--mantine-color-dimmed);
   --border: var(--mantine-color-default-border);
   --card: var(--mantine-color-default);
 }

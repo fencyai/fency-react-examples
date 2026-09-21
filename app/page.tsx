@@ -1,6 +1,6 @@
 'use client'
 
-import { Anchor, Card, Group, SimpleGrid, Text, Title } from '@mantine/core'
+import { Anchor, Button, Card, Group, SimpleGrid, Text, Title } from '@mantine/core'
 import Link from 'next/link'
 
 const examples = [
@@ -21,7 +21,7 @@ const examples = [
     href: '/explore-memories',
     title: 'Explore memories',
     description:
-      'A chat with per-user conversation threads. Each EXPLORE_MEMORIES task is attached after getConversation confirms ownership.',
+      'A chat with per-user conversation threads that search a signed-in user’s memories.',
     guide: 'https://docs.fency.ai/docs/integration/explore-memories',
   },
   {
@@ -46,18 +46,29 @@ export default function HomePage() {
       </Text>
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mt="xl">
         {examples.map((example) => (
-          <Card key={example.href} withBorder padding="lg" radius="lg">
+          <Card
+            key={example.href}
+            withBorder
+            padding="lg"
+            radius="md"
+            className="flex h-full flex-col transition-shadow hover:shadow-sm"
+          >
             <Title order={2} size="h4">
               {example.title}
             </Title>
-            <Text size="sm" c="dimmed" mt="sm">
+            <Text size="sm" c="dimmed" mt="xs" mb="lg">
               {example.description}
             </Text>
-            <Group gap="md" mt="md">
-              <Anchor component={Link} href={example.href} underline="always">
+            <Group gap="md" mt="auto">
+              <Button component={Link} href={example.href} size="sm">
                 Open example
-              </Anchor>
-              <Anchor href={example.guide} c="dimmed" underline="always">
+              </Button>
+              <Anchor
+                href={example.guide}
+                c="dimmed"
+                size="sm"
+                underline="hover"
+              >
                 Read the guide
               </Anchor>
             </Group>

@@ -26,15 +26,6 @@ export const documentRepository = {
     return row ?? null
   },
 
-  async findByFencyMemoryId(fencyMemoryId: string) {
-    const [row] = await db
-      .select()
-      .from(documentTable)
-      .where(eq(documentTable.fencyMemoryId, fencyMemoryId))
-      .limit(1)
-    return row ?? null
-  },
-
   async listByUser(userId: string) {
     return db
       .select()

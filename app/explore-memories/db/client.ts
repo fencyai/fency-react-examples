@@ -2,7 +2,7 @@ import 'server-only'
 
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
-import { catTable } from './catTable'
+import { carTable } from './carTable'
 import { memoryTypeTable } from './memoryTypeTable'
 
 const connectionString = process.env.DATABASE_URL
@@ -18,4 +18,4 @@ if (process.env.NODE_ENV !== 'production') {
   globalForDb.pool = pool
 }
 
-export const db = drizzle(pool, { schema: { catTable, memoryTypeTable } })
+export const db = drizzle(pool, { schema: { carTable, memoryTypeTable } })

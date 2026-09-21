@@ -58,18 +58,20 @@ export function useStreamingChat() {
         { fetchCreateAgentTaskClientToken },
       )
 
-      if (
-        response.type === 'success' &&
-        response.response.taskType === 'StreamingChatCompletion'
-      ) {
-        const assistant = response.response.response.messages.at(-1)
-        if (assistant?.role === 'ASSISTANT') {
-          setMessages([
-            ...nextMessages,
-            { role: 'ASSISTANT', content: assistant.content },
-          ])
-        }
+      if (response.type !== 'success') {
+        throw new Error(response.error.message)
       }
+      if (response.response.taskType !== 'StreamingChatCompletion') {
+        throw new Error('Unexpected StreamingChatCompletion outcome.')
+      }
+      const assistant = response.response.response.messages.at(-1)
+      if (assistant?.role !== 'ASSISTANT') {
+        throw new Error('StreamingChatCompletion did not return an assistant message.')
+      }
+      setMessages([
+        ...nextMessages,
+        { role: 'ASSISTANT', content: assistant.content },
+      ])
     } finally {
       setIsSubmitting(false)
     }

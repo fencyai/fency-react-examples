@@ -2,9 +2,7 @@ import 'server-only'
 
 import { and, eq, isNotNull, isNull, ne } from 'drizzle-orm'
 import { db } from './client'
-import { catTable } from './catTable'
-
-export type CarRow = typeof catTable.$inferSelect
+import { carTable } from './carTable'
 
 type NewCar = {
   userId: string
@@ -27,24 +25,24 @@ export const carRepository = {
   async listByUser(userId: string, versionTag: string) {
     return db
       .select()
-      .from(catTable)
+      .from(carTable)
       .where(
         and(
-          eq(catTable.userId, userId),
-          eq(catTable.versionTag, versionTag),
+          eq(carTable.userId, userId),
+          eq(carTable.versionTag, versionTag),
         ),
       )
   },
 
   async countSynced(userId: string, versionTag: string) {
     const rows = await db
-      .select({ id: catTable.id })
-      .from(catTable)
+      .select({ id: carTable.id })
+      .from(carTable)
       .where(
         and(
-          eq(catTable.userId, userId),
-          eq(catTable.versionTag, versionTag),
-          isNotNull(catTable.fencyMemoryId),
+          eq(carTable.userId, userId),
+          eq(carTable.versionTag, versionTag),
+          isNotNull(carTable.fencyMemoryId),
         ),
       )
     return rows.length
@@ -52,21 +50,21 @@ export const carRepository = {
 
   async deleteStale(userId: string, versionTag: string) {
     await db
-      .delete(catTable)
+      .delete(carTable)
       .where(
         and(
-          eq(catTable.userId, userId),
-          ne(catTable.versionTag, versionTag),
+          eq(carTable.userId, userId),
+          ne(carTable.versionTag, versionTag),
         ),
       )
 
     await db
-      .delete(catTable)
+      .delete(carTable)
       .where(
         and(
-          eq(catTable.userId, userId),
-          eq(catTable.versionTag, versionTag),
-          isNull(catTable.fencyMemoryId),
+          eq(carTable.userId, userId),
+          eq(carTable.versionTag, versionTag),
+          isNull(carTable.fencyMemoryId),
         ),
       )
   },
@@ -77,26 +75,26 @@ export const carRepository = {
     }
 
     await db
-      .insert(catTable)
+      .insert(carTable)
       .values(cars)
       .onConflictDoNothing({
         target: [
-          catTable.userId,
-          catTable.identity,
-          catTable.versionTag,
+          carTable.userId,
+          carTable.identity,
+          carTable.versionTag,
         ],
       })
   },
 
   async touchUnsynced(userId: string, versionTag: string, updatedAt: Date) {
     await db
-      .update(catTable)
+      .update(carTable)
       .set({ updatedAt })
       .where(
         and(
-          eq(catTable.userId, userId),
-          eq(catTable.versionTag, versionTag),
-          isNull(catTable.fencyMemoryId),
+          eq(carTable.userId, userId),
+          eq(carTable.versionTag, versionTag),
+          isNull(carTable.fencyMemoryId),
         ),
       )
   },
@@ -110,12 +108,12 @@ export const carRepository = {
   ) {
     for (const mapping of mappings) {
       await db
-        .update(catTable)
+        .update(carTable)
         .set({ fencyMemoryId: mapping.fencyMemoryId })
         .where(
           and(
-            eq(catTable.identity, mapping.identity),
-            eq(catTable.versionTag, mapping.versionTag),
+            eq(carTable.identity, mapping.identity),
+            eq(carTable.versionTag, mapping.versionTag),
           ),
         )
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getAuthorizedUserId } from '../../../auth'
+import { sessionClientTokenSchema } from '../../sessionClientTokenSchema'
 import { getSyncedCarCatalog } from './getSyncedCarCatalog'
 import { getExploreMemoriesVersionTag } from '../../versionTag'
 import { getFencyConversation } from '../getFencyConversation'
@@ -67,6 +68,8 @@ export async function POST(request: Request) {
       },
     }),
   })
-  const data = await response.json()
-  return NextResponse.json(data, { status: response.status })
+  if (!response.ok) {
+    throw new Error('Failed to create Fency session.')
+  }
+  return NextResponse.json(sessionClientTokenSchema.parse(await response.json()))
 }

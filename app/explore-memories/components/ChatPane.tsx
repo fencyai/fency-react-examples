@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, Center, Loader, Stack, Text } from '@mantine/core'
+import { Alert, Center, Loader, Stack, Text, Title } from '@mantine/core'
 import { AgentTaskProgress } from '@fencyai/react'
 import { useExploreChat } from '../hooks/useExploreChat'
 import type { LatestTurn } from '../hooks/useConversation'
@@ -64,10 +64,14 @@ export function ChatPane({
             ) : null}
           </>
         ) : (
-          <Text size="sm" c="dimmed">
-            Ask a question over your memories. Each chat is a Fency conversation
-            scoped to your signed-in user.
-          </Text>
+          <Stack align="center" gap={4} py="xl">
+            <Title order={2} size="h5">
+              Ask your memories
+            </Title>
+            <Text size="sm" c="dimmed" ta="center" maw={420}>
+              Each chat is a Fency conversation scoped to your signed-in user.
+            </Text>
+          </Stack>
         )}
       </Stack>
       <div

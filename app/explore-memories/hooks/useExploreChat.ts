@@ -72,8 +72,11 @@ export function useExploreChat({
         },
       )
 
-      if (response.type === 'success' && !hadHistory) {
-        onFirstMessage(current.id, text)
+      if (response.type !== 'success') {
+        throw new Error(response.error.message)
+      }
+      if (response.response.taskType !== 'ExploreMemories') {
+        throw new Error('Unexpected ExploreMemories outcome.')
       }
     } finally {
       setIsSubmitting(false)
