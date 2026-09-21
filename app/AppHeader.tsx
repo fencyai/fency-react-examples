@@ -16,19 +16,19 @@ const examples = [
   { value: '/document-analysis', label: 'Document analysis' },
 ] as const
 
-function exampleValueFromPath(pathname: string) {
+function pickerValueFromPath(pathname: string) {
   return (
     examples.find(
       (example) =>
         pathname === example.value || pathname.startsWith(`${example.value}/`),
-    )?.value ?? null
+    )?.value ?? '/'
   )
 }
 
 export function AppHeader() {
   const pathname = usePathname()
   const router = useRouter()
-  const selectedExample = exampleValueFromPath(pathname)
+  const selected = pickerValueFromPath(pathname)
 
   return (
     <header className="shrink-0 border-b border-(--border) bg-(--card)">
@@ -38,23 +38,21 @@ export function AppHeader() {
         py="sm"
         gap="md"
         wrap="wrap"
-        justify={selectedExample ? 'space-between' : 'flex-end'}
+        justify="space-between"
       >
-        {selectedExample ? (
-          <Select
-            aria-label="Example"
-            size="sm"
-            w={200}
-            data={examples}
-            value={selectedExample}
-            allowDeselect={false}
-            onChange={(href) => {
-              if (href) {
-                router.push(href)
-              }
-            }}
-          />
-        ) : null}
+        <Select
+          aria-label="Example"
+          size="sm"
+          w={200}
+          data={[{ value: '/', label: 'Home' }, ...examples]}
+          value={selected}
+          allowDeselect={false}
+          onChange={(href) => {
+            if (href) {
+              router.push(href)
+            }
+          }}
+        />
         <Group gap="sm">
           <Show when="signed-out">
             <SignInButton>
