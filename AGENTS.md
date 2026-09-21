@@ -23,6 +23,15 @@ The guides embed example code verbatim. Whenever you change an example, update
 the matching guide in the same pass so its snippets, file names, and route
 paths stay identical to the code.
 
+## Landing page connection
+
+`customers/fency-landing` `#use-cases` lists the same examples as
+`examplesCatalog`. Titles, descriptions, difficulties, hrefs, and guide
+URLs must stay identical.
+
+Whenever you change the catalog, update the matching list in
+`fency-landing` `UseCaseGridSection` in the same pass.
+
 ## Code quality bar
 
 The code quality rules live in [CODE_QUALITY.md](./CODE_QUALITY.md). Read and
@@ -129,8 +138,9 @@ and must stay that way:
 2. If it persists, prefix every table name with the slug and add `*Table.ts`
    files under that example's `db/`. Generate the SQL into the shared
    `drizzle/` folder with `npm run db:generate`.
-3. Add a card on `app/page.tsx` and a link in `app/AppHeader.tsx`. Protect the
-   new route tree in `proxy.ts`.
+3. Add an entry to `app/examplesCatalog.ts`. The home cards and header
+   picker read from that catalog. Protect the new route tree in `proxy.ts`.
 4. Add a row to the mapping table in this file.
 5. Add a matching guide page and sidebar entry in
    `fency-docs-v2/content/docs/integration/`.
+6. Add the same card to `fency-landing` `UseCaseGridSection`.
