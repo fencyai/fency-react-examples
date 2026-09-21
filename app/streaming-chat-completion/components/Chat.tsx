@@ -15,7 +15,7 @@ export function Chat() {
   }, [turns, isSubmitting])
 
   return (
-    <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col">
+    <div className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col">
       <Group justify="space-between" align="flex-start" px="md" py="sm" wrap="nowrap">
         <div>
           <Title order={1} size="h4">

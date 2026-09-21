@@ -12,7 +12,7 @@ export function Extractor() {
     useStructuredExtraction()
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6">
       <div>
         <Title order={1} size="h4">
           Structured chat completion
