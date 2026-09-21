@@ -10,10 +10,12 @@ import { Button, Group, Select } from '@mantine/core'
 import { usePathname, useRouter } from 'next/navigation'
 
 const examples = [
-  { value: '/streaming-chat-completion', label: 'Streaming chat' },
-  { value: '/structured-chat-completion', label: 'Structured chat' },
-  { value: '/explore-memories', label: 'Explore memories' },
-  { value: '/document-analysis', label: 'Document analysis' },
+  { value: '/streaming-response', label: 'Streaming response' },
+  { value: '/json-response', label: 'JSON response' },
+  { value: '/basic-chat', label: 'Basic chat' },
+  { value: '/json-extraction', label: 'JSON extraction' },
+  { value: '/document-json-extraction', label: 'Document JSON extraction' },
+  { value: '/data-exploration', label: 'Data exploration' },
 ] as const
 
 function pickerValueFromPath(pathname: string) {
@@ -43,7 +45,7 @@ export function AppHeader() {
         <Select
           aria-label="Example"
           size="sm"
-          w={200}
+          w={260}
           data={[{ value: '/', label: 'Home' }, ...examples]}
           value={selected}
           allowDeselect={false}

@@ -1,0 +1,80 @@
+'use client'
+
+import { useAgentTasks, type AgentTask } from '@fencyai/react'
+import { useState } from 'react'
+import type { ChatMessage } from '../ChatMessage'
+import { sessionClientTokenSchema } from '../sessionClientTokenSchema'
+
+export type Turn = {
+  userMessage: ChatMessage
+  agentTask?: AgentTask
+}
+
+async function fetchCreateAgentTaskClientToken() {
+  const res = await fetch(
+    '/basic-chat/api/create-agent-task-session',
+    { method: 'POST' },
+  )
+  if (!res.ok) {
+    throw new Error('Failed to create agent task session')
+  }
+  const { clientToken } = sessionClientTokenSchema.parse(await res.json())
+  return { clientToken }
+}
+
+export function useBasicChat() {
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { agentTasks, createAgentTask } = useAgentTasks({})
+
+  const streamingTasks = agentTasks.filter(
+    (task) => task.params.type === 'StreamingChatCompletion',
+  )
+
+  const turns: Turn[] = messages
+    .filter((message) => message.role === 'USER')
+    .map((userMessage, index) => ({
+      userMessage,
+      agentTask: streamingTasks[index],
+    }))
+
+  async function sendMessage(text: string) {
+    setIsSubmitting(true)
+    const nextMessages: ChatMessage[] = [
+      ...messages,
+      { role: 'USER', content: text },
+    ]
+    setMessages(nextMessages)
+
+    try {
+      const response = await createAgentTask(
+        {
+          type: 'StreamingChatCompletion',
+          messages: nextMessages,
+          model: 'anthropic/claude-sonnet-4.6',
+        },
+        { fetchCreateAgentTaskClientToken },
+      )
+
+      if (response.type !== 'success') {
+        throw new Error(response.error.message)
+      }
+      if (response.response.taskType !== 'StreamingChatCompletion') {
+        throw new Error('Unexpected StreamingChatCompletion outcome.')
+      }
+      const assistant = response.response.response.messages.at(-1)
+      if (assistant?.role !== 'ASSISTANT') {
+        throw new Error('StreamingChatCompletion did not return an assistant message.')
+      }
+      setMessages([
+        ...nextMessages,
+        { role: 'ASSISTANT', content: assistant.content },
+      ])
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return { turns, isSubmitting, sendMessage }
+}

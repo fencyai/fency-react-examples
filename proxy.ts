@@ -1,14 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
 const isProtectedRoute = createRouteMatcher([
-  '/streaming-chat-completion(.*)',
-  '/structured-chat-completion(.*)',
-  '/explore-memories(.*)',
-  '/document-analysis(.*)',
+  '/streaming-response(.*)',
+  '/json-response(.*)',
+  '/basic-chat(.*)',
+  '/json-extraction(.*)',
+  '/document-json-extraction(.*)',
+  '/data-exploration(.*)',
 ])
 
 const isFencyWebhook = createRouteMatcher([
-  '/document-analysis/api/fency-webhook',
+  '/document-json-extraction/api/fency-webhook',
 ])
 
 export default clerkMiddleware(

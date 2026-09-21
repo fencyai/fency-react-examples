@@ -19,7 +19,7 @@ well-known patterns.
   the reader than branching that obscures the Fency integration being taught.
 - Keep the file structure intuitive and files lean. A file name should match
   the class, function, or component it exports (`Chat.tsx` exports `Chat`,
-  `useStreamingChat.ts` exports `useStreamingChat`). Split a file when it
+  `useBasicChat.ts` exports `useBasicChat`). Split a file when it
   accumulates unrelated responsibilities, and delete folders that hold
   nothing.
 - Code must be self-explanatory. It should read cleanly without excessive

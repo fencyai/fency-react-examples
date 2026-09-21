@@ -5,31 +5,41 @@ import Link from 'next/link'
 
 const examples = [
   {
-    href: '/streaming-chat-completion',
-    title: 'Streaming chat completion',
-    description: 'A chat that streams tokens as they are generated.',
-    guide: 'https://docs.fency.ai/docs/integration/streaming-chat-completion',
+    href: '/streaming-response',
+    title: 'Streaming response',
+    description: 'One prompt. The reply streams in as it is generated.',
+    guide: 'https://docs.fency.ai/docs/integration/streaming-response',
   },
   {
-    href: '/structured-chat-completion',
-    title: 'Structured chat completion',
+    href: '/json-response',
+    title: 'JSON response',
     description:
-      'Paste free text and extract a JSON record shaped by a Zod schema.',
-    guide: 'https://docs.fency.ai/docs/integration/structured-chat-completion',
+      'One prompt. The reply is a JSON object with a string, a boolean, and a number.',
+    guide: 'https://docs.fency.ai/docs/integration/json-response',
   },
   {
-    href: '/explore-memories',
-    title: 'Explore memories',
-    description:
-      'A chat with per-user conversation threads that search a signed-in user’s memories.',
-    guide: 'https://docs.fency.ai/docs/integration/explore-memories',
+    href: '/basic-chat',
+    title: 'Basic chat',
+    description: 'A multi-turn chat. Each reply streams in.',
+    guide: 'https://docs.fency.ai/docs/integration/basic-chat',
   },
   {
-    href: '/document-analysis',
-    title: 'Document analysis',
-    description:
-      'Upload a PDF, wait for the memory.updated webhook, then extract typed data points with MemorySearch.',
-    guide: 'https://docs.fency.ai/docs/integration/document-analysis',
+    href: '/json-extraction',
+    title: 'JSON extraction',
+    description: 'Paste free text and get a typed record back.',
+    guide: 'https://docs.fency.ai/docs/integration/json-extraction',
+  },
+  {
+    href: '/document-json-extraction',
+    title: 'Document JSON extraction',
+    description: 'Upload a PDF and pull typed fields out of it.',
+    guide: 'https://docs.fency.ai/docs/integration/document-json-extraction',
+  },
+  {
+    href: '/data-exploration',
+    title: 'Data exploration',
+    description: 'Ask questions over a per-user catalog.',
+    guide: 'https://docs.fency.ai/docs/integration/data-exploration',
   },
 ]
 
@@ -40,9 +50,8 @@ export default function HomePage() {
         Fency React examples
       </Title>
       <Text c="dimmed" mt="sm" maw={672}>
-        Each example is a self-contained folder that maps 1-to-1 to a guide.
-        Open the example, then follow the matching guide while inspecting that
-        folder.
+        Each card is a use case. Open it, then follow the matching guide while
+        inspecting that folder.
       </Text>
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mt="xl">
         {examples.map((example) => (

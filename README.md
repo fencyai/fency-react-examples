@@ -59,7 +59,7 @@ Open [http://localhost:3000](http://localhost:3000). Sign up from the header,
 then open an example. The landing page is public; the examples require
 sign-in.
 
-Document analysis waits for a Fency `memory.updated` webhook after each PDF
+Document JSON extraction waits for a Fency `memory.updated` webhook after each PDF
 upload. Fency cannot reach `localhost`, so expose the app with a tunnel and
 register that URL in the Fency dashboard:
 
@@ -68,9 +68,9 @@ cloudflared tunnel --url http://localhost:3000
 ```
 
 Create a webhook at [app.fency.ai](https://app.fency.ai) pointing at
-`https://<tunnel-host>/document-analysis/api/fency-webhook`. Copy the
+`https://<tunnel-host>/document-json-extraction/api/fency-webhook`. Copy the
 generated secret into `DOCUMENT_ANALYSIS_WEBHOOK_SECRET`. The webhook route
-is public; every other `/document-analysis` path requires sign-in.
+is public; every other `/document-json-extraction` path requires sign-in.
 
 In the [Clerk dashboard](https://dashboard.clerk.com), enable **Email**,
 **Password**, and **Google** as sign-in methods.

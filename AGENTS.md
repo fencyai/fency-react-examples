@@ -9,10 +9,12 @@ folder. That is why the examples must not share code.
 
 | Example folder | Guide |
 |---|---|
-| `app/streaming-chat-completion/` | `/docs/integration/streaming-chat-completion` |
-| `app/structured-chat-completion/` | `/docs/integration/structured-chat-completion` |
-| `app/explore-memories/` | `/docs/integration/explore-memories` |
-| `app/document-analysis/` | `/docs/integration/document-analysis` |
+| `app/streaming-response/` | `/docs/integration/streaming-response` |
+| `app/json-response/` | `/docs/integration/json-response` |
+| `app/basic-chat/` | `/docs/integration/basic-chat` |
+| `app/json-extraction/` | `/docs/integration/json-extraction` |
+| `app/document-json-extraction/` | `/docs/integration/document-json-extraction` |
+| `app/data-exploration/` | `/docs/integration/data-exploration` |
 
 The guides live in `customers/fency-docs-v2/content/docs/integration/` in the
 Fency workspace (published as the Integration section of the docs site).
@@ -31,7 +33,7 @@ follow them for every change in this repo.
 The repo is organized package-by-feature first, package-by-layer second:
 
 1. **Feature packages.** Each example folder under `app/` (for example
-   `app/explore-memories/`) is one feature package. Everything the feature
+   `app/data-exploration/`) is one feature package. Everything the feature
    needs lives inside its folder; nothing leaks out (see the no-overlap
    contract below).
 2. **Layer packages inside each feature.** Within a feature, group files by
