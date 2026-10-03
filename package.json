@@ -20,7 +20,7 @@
     "@uppy/core": "^6.0.0",
     "@uppy/react": "^6.0.0",
     "@uppy/xhr-upload": "^6.0.0",
-    "drizzle-orm": "^0.38.3",
+    "drizzle-orm": "^0.45.0",
     "next": "16.2.6",
     "pg": "^8.13.1",
     "react": "19.2.6",
